@@ -22,7 +22,11 @@
       --primary-dark: #6e5cf2;
       --success: #52d69b;
       --danger: #ff7777;
-      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+
+      --ticker-bg: #111827;
+      --ticker-text: #ffffff;
+      --ticker-label-bg: #dc2626;
+      --ticker-label-text: #ffffff;
     }
 
     * {
@@ -54,7 +58,9 @@
     }
 
     button,
-    input {
+    input,
+    textarea,
+    select {
       font: inherit;
     }
 
@@ -63,7 +69,9 @@
     }
 
     button:focus-visible,
-    input:focus-visible {
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
       outline: 3px solid rgba(139, 124, 255, 0.55);
       outline-offset: 3px;
     }
@@ -85,7 +93,7 @@
           rgba(139, 124, 255, 0.18),
           rgba(34, 37, 46, 0.92)
         );
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
     }
 
     .brand-row {
@@ -138,7 +146,7 @@
       border: 1px solid var(--border);
       border-radius: 22px;
       background: rgba(25, 27, 34, 0.92);
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
     }
 
     .panel h2 {
@@ -198,7 +206,6 @@
     .danger-button {
       min-height: 44px;
       padding: 10px 18px;
-      border: 0;
       border-radius: 12px;
       font-weight: 700;
       transition:
@@ -214,6 +221,7 @@
     }
 
     .primary-button {
+      border: 0;
       background: var(--primary);
       color: white;
     }
@@ -234,9 +242,9 @@
     }
 
     .danger-button {
+      border: 1px solid rgba(255, 119, 119, 0.3);
       background: rgba(255, 119, 119, 0.14);
       color: #ffaaaa;
-      border: 1px solid rgba(255, 119, 119, 0.3);
     }
 
     .danger-button:hover {
@@ -309,6 +317,10 @@
       font-size: 0.78rem;
       white-space: nowrap;
     }
+
+    /*
+      Preview Stage
+    */
 
     .preview-stage {
       position: relative;
@@ -398,6 +410,102 @@
       font-size: 0.88rem;
     }
 
+    /*
+      News Ticker
+    */
+
+    .ticker-overlay {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 5;
+      display: none;
+      align-items: stretch;
+      height: 42px;
+      overflow: hidden;
+      background: var(--ticker-bg);
+      color: var(--ticker-text);
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 -5px 16px rgba(0, 0, 0, 0.28);
+    }
+
+    .ticker-overlay.visible {
+      display: flex;
+    }
+
+    .ticker-label {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      padding: 0 14px;
+      background: var(--ticker-label-bg);
+      color: var(--ticker-label-text);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 5px 0 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .ticker-window {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      align-items: center;
+      min-width: max-content;
+      white-space: nowrap;
+      animation-name: tickerMoveRightToLeft;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 14s;
+      will-change: transform;
+    }
+
+    .ticker-message {
+      display: inline-block;
+      padding-right: 90px;
+      color: var(--ticker-text);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .ticker-separator {
+      display: inline-block;
+      margin-right: 22px;
+      color: #facc15;
+      font-size: 0.9rem;
+    }
+
+    @keyframes tickerMoveRightToLeft {
+      0% {
+        transform: translateX(100%);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .ticker-overlay.paused .ticker-track {
+      animation-play-state: paused;
+    }
+
+    /*
+      Preview Controls
+    */
+
     .preview-controls {
       display: flex;
       flex-wrap: wrap;
@@ -412,6 +520,10 @@
       font-size: 0.84rem;
       text-align: center;
     }
+
+    /*
+      Tools
+    */
 
     .tools-panel {
       min-height: 560px;
@@ -454,33 +566,199 @@
       font-weight: 700;
     }
 
-    .fullscreen-active .preview-stage {
-      min-height: 100%;
+    /*
+      Ticker Settings
+    */
+
+    .ticker-settings {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .ticker-settings h3 {
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .ticker-settings-description {
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .form-help {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .text-input,
+    .text-area,
+    .select-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #101218;
+      color: var(--text);
+    }
+
+    .text-input,
+    .select-input {
+      min-height: 42px;
+      padding: 9px 12px;
+    }
+
+    .text-area {
+      min-height: 90px;
+      padding: 10px 12px;
+      resize: vertical;
+    }
+
+    .text-input::placeholder,
+    .text-area::placeholder {
+      color: #72798a;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-input {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .range-value {
+      min-width: 48px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: right;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-input {
+      width: 48px;
+      height: 38px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .color-value {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .checkbox-row label {
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .ticker-action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .ticker-action-row button {
+      flex: 1 1 150px;
+    }
+
+    /*
+      Fullscreen
+    */
+
+    .preview-stage:fullscreen {
+      display: flex;
+      min-height: 100vh;
+      padding: 24px;
       border: 0;
       border-radius: 0;
       background: #050609;
     }
 
-    .fullscreen-active .preview-frame {
-      width: min(94vw, 520px);
-      max-height: 94vh;
-      border-color: #555b6e;
-    }
-
-    .fullscreen-active .preview-controls {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-      z-index: 3;
-    }
-
-    .fullscreen-active .preview-note {
-      display: none;
-    }
-
-    .fullscreen-active {
+    .preview-stage:-webkit-full-screen {
+      display: flex;
+      min-height: 100vh;
+      padding: 24px;
+      border: 0;
+      border-radius: 0;
       background: #050609;
     }
+
+    .preview-stage:fullscreen .preview-frame {
+      width: min(94vw, 520px);
+      max-height: 94vh;
+    }
+
+    .preview-stage:-webkit-full-screen .preview-frame {
+      width: min(94vw, 520px);
+      max-height: 94vh;
+    }
+
+    .preview-stage:fullscreen .ticker-overlay {
+      height: 48px;
+    }
+
+    .preview-stage:-webkit-full-screen .ticker-overlay {
+      height: 48px;
+    }
+
+    /*
+      Footer
+    */
 
     footer {
       padding: 28px 0 8px;
@@ -488,6 +766,10 @@
       font-size: 0.82rem;
       text-align: center;
     }
+
+    /*
+      Responsive Layout
+    */
 
     @media (max-width: 900px) {
       main {
@@ -559,6 +841,24 @@
         max-width: 100%;
         text-align: left;
       }
+
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ticker-label {
+        min-width: 78px;
+        padding: 0 9px;
+        font-size: 0.68rem;
+      }
+
+      .ticker-message {
+        font-size: 0.78rem;
+      }
+
+      .ticker-overlay {
+        height: 38px;
+      }
     }
 
     @media (max-width: 420px) {
@@ -594,6 +894,16 @@
       .preview-controls button {
         flex: 1 1 100%;
       }
+
+      .ticker-label {
+        min-width: 70px;
+        padding: 0 7px;
+        font-size: 0.62rem;
+      }
+
+      .ticker-message {
+        font-size: 0.72rem;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -620,6 +930,7 @@
 
         <div>
           <h1>Swar Srijan Studio</h1>
+
           <p class="subtitle">
             फोटो, वीडियो और आवाज़ से रचनात्मक रील बनाने का आपका निजी स्टूडियो
           </p>
@@ -628,6 +939,7 @@
     </header>
 
     <main>
+      <!-- Media Upload -->
       <section class="panel upload-panel">
         <h2>मीडिया अपलोड करें</h2>
 
@@ -669,6 +981,7 @@
         >
           <div class="file-info-row">
             <span class="file-info-label">फ़ाइल का नाम</span>
+
             <span
               id="fileName"
               class="file-info-value"
@@ -679,6 +992,7 @@
 
           <div class="file-info-row">
             <span class="file-info-label">फ़ाइल का प्रकार</span>
+
             <span
               id="fileType"
               class="file-info-value"
@@ -689,6 +1003,7 @@
 
           <div class="file-info-row">
             <span class="file-info-label">फ़ाइल का आकार</span>
+
             <span
               id="fileSize"
               class="file-info-value"
@@ -699,6 +1014,7 @@
         </div>
       </section>
 
+      <!-- Preview -->
       <section class="panel preview-panel">
         <div class="preview-heading-row">
           <div>
@@ -732,7 +1048,9 @@
                 📱
               </div>
 
-              <strong>आपका प्रीव्यू यहाँ दिखाई देगा</strong>
+              <strong>
+                आपका प्रीव्यू यहाँ दिखाई देगा
+              </strong>
 
               <span>
                 9:16 वर्टिकल फ्रेम में फोटो या वीडियो देखने के लिए
@@ -754,6 +1072,48 @@
               preload="metadata"
               aria-label="अपलोड किए गए वीडियो का प्रीव्यू"
             ></video>
+
+            <!-- News Ticker Overlay -->
+            <div
+              id="tickerOverlay"
+              class="ticker-overlay"
+              aria-label="न्यूज़ टिकर"
+            >
+              <div
+                id="tickerLabel"
+                class="ticker-label"
+              >
+                BREAKING
+              </div>
+
+              <div class="ticker-window">
+                <div
+                  id="tickerTrack"
+                  class="ticker-track"
+                >
+                  <span
+                    id="tickerMessageOne"
+                    class="ticker-message"
+                  >
+                    आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी
+                  </span>
+
+                  <span
+                    class="ticker-separator"
+                    aria-hidden="true"
+                  >
+                    ◆
+                  </span>
+
+                  <span
+                    id="tickerMessageTwo"
+                    class="ticker-message"
+                  >
+                    आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -800,47 +1160,237 @@
         </p>
       </section>
 
+      <!-- Tools -->
       <section class="panel tools-panel">
-        <h2>आगे के रचनात्मक उपकरण</h2>
+        <h2>रचनात्मक उपकरण</h2>
 
         <p class="panel-description">
-          ये सुविधाएँ अगले चरणों में इसी स्थानीय प्रणाली के अंदर जोड़ी जाएँगी।
+          नीचे न्यूज़-स्टाइल टिकर की सेटिंग उपलब्ध है। अन्य सुविधाएँ आगे जोड़ी जाएँगी।
         </p>
+
+        <!-- Ticker Settings -->
+        <div class="ticker-settings">
+          <h3>📰 न्यूज़ टिकर सेटिंग</h3>
+
+          <p class="ticker-settings-description">
+            नीचे लिखा गया संदेश प्रीव्यू के निचले भाग में न्यूज़ चैनल की तरह
+            दाएँ से बाएँ लगातार चलेगा।
+          </p>
+
+          <div class="form-group">
+            <label
+              class="form-label"
+              for="tickerTextInput"
+            >
+              टिकर में लिखें
+            </label>
+
+            <textarea
+              id="tickerTextInput"
+              class="text-area"
+              placeholder="उदाहरण: आज की महत्वपूर्ण सूचना यहाँ लिखें..."
+            >आज की महत्वपूर्ण सूचना यहाँ लगातार चलेगी</textarea>
+
+            <span class="form-help">
+              यह टेक्स्ट BREAKING लेबल के दाईं ओर चलता रहेगा।
+            </span>
+          </div>
+
+          <div class="settings-grid">
+            <div class="form-group">
+              <label
+                class="form-label"
+                for="tickerSpeedInput"
+              >
+                चलने की गति
+              </label>
+
+              <div class="range-row">
+                <input
+                  id="tickerSpeedInput"
+                  class="range-input"
+                  type="range"
+                  min="6"
+                  max="35"
+                  value="14"
+                />
+
+                <span
+                  id="tickerSpeedValue"
+                  class="range-value"
+                >
+                  14 सेकंड
+                </span>
+              </div>
+
+              <span class="form-help">
+                कम सेकंड = तेज़ गति
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label
+                class="form-label"
+                for="tickerFontSizeInput"
+              >
+                फ़ॉन्ट आकार
+              </label>
+
+              <div class="range-row">
+                <input
+                  id="tickerFontSizeInput"
+                  class="range-input"
+                  type="range"
+                  min="12"
+                  max="30"
+                  value="16"
+                />
+
+                <span
+                  id="tickerFontSizeValue"
+                  class="range-value"
+                >
+                  16 px
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <div class="form-group">
+              <label
+                class="form-label"
+                for="tickerBackgroundInput"
+              >
+                टिकर पट्टी का रंग
+              </label>
+
+              <div class="color-row">
+                <input
+                  id="tickerBackgroundInput"
+                  class="color-input"
+                  type="color"
+                  value="#111827"
+                />
+
+                <span
+                  id="tickerBackgroundValue"
+                  class="color-value"
+                >
+                  #111827
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label
+                class="form-label"
+                for="tickerTextColorInput"
+              >
+                टेक्स्ट का रंग
+              </label>
+
+              <div class="color-row">
+                <input
+                  id="tickerTextColorInput"
+                  class="color-input"
+                  type="color"
+                  value="#ffffff"
+                />
+
+                <span
+                  id="tickerTextColorValue"
+                  class="color-value"
+                >
+                  #ffffff
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-row">
+              <input
+                id="tickerBoldInput"
+                type="checkbox"
+                checked
+              />
+
+              <label for="tickerBoldInput">
+                टेक्स्ट को बोल्ड रखें
+              </label>
+            </div>
+          </div>
+
+          <div class="ticker-action-row">
+            <button
+              id="tickerToggleButton"
+              class="primary-button"
+              type="button"
+            >
+              टिकर बंद करें
+            </button>
+
+            <button
+              id="tickerPauseButton"
+              class="secondary-button"
+              type="button"
+            >
+              टिकर रोकें
+            </button>
+          </div>
+        </div>
 
         <div class="tool-section">
           <h3>✍️ टेक्स्ट ओवरले</h3>
+
           <p>
-            फोटो या वीडियो पर हिंदी टेक्स्ट, शीर्षक, रंग, आकार और स्थिति
+            फोटो या वीडियो पर अलग शीर्षक, उद्धरण, नाम, रंग, आकार और स्थिति
             निर्धारित करने की सुविधा।
           </p>
-          <span class="coming-soon">जल्द जोड़ा जाएगा</span>
+
+          <span class="coming-soon">
+            आगे जोड़ा जाएगा
+          </span>
         </div>
 
         <div class="tool-section">
           <h3>🔊 महिला मधुर आवाज़</h3>
+
           <p>
             ब्राउज़र की उपलब्ध Speech Synthesis सुविधा के आधार पर टेक्स्ट को
             आवाज़ में बदलने का प्रारंभिक विकल्प।
           </p>
-          <span class="coming-soon">अगले चरण में</span>
+
+          <span class="coming-soon">
+            अगले चरण में
+          </span>
         </div>
 
         <div class="tool-section">
           <h3>🎬 रील टाइमलाइन</h3>
+
           <p>
             फोटो, टेक्स्ट और आवाज़ को समय के अनुसार जोड़कर रील तैयार करने का
             इंटरफ़ेस।
           </p>
-          <span class="coming-soon">आगे विकसित होगा</span>
+
+          <span class="coming-soon">
+            आगे विकसित होगा
+          </span>
         </div>
 
         <div class="tool-section">
           <h3>🧠 निजी बातचीत और स्मृति</h3>
+
           <p>
             स्थानीय रूप से सुरक्षित नोट्स, पसंद, निर्देश और बातचीत का आधार।
             इस सुविधा को बाद में privacy-first तरीके से बनाया जाएगा।
           </p>
-          <span class="coming-soon">भविष्य का चरण</span>
+
+          <span class="coming-soon">
+            भविष्य का चरण
+          </span>
         </div>
       </section>
     </main>
@@ -851,13 +1401,16 @@
   </div>
 
   <script>
+    /*
+      Media Elements
+    */
+
     const mediaInput = document.getElementById("mediaInput");
 
     const imagePreview = document.getElementById("imagePreview");
     const videoPreview = document.getElementById("videoPreview");
 
     const emptyPreview = document.getElementById("emptyPreview");
-    const previewFrame = document.getElementById("previewFrame");
     const previewStage = document.getElementById("previewStage");
     const previewStatus = document.getElementById("previewStatus");
 
@@ -873,6 +1426,41 @@
 
     let currentObjectUrl = null;
     let currentMediaType = null;
+
+    /*
+      Ticker Elements
+    */
+
+    const tickerOverlay = document.getElementById("tickerOverlay");
+    const tickerTrack = document.getElementById("tickerTrack");
+
+    const tickerMessageOne = document.getElementById("tickerMessageOne");
+    const tickerMessageTwo = document.getElementById("tickerMessageTwo");
+
+    const tickerTextInput = document.getElementById("tickerTextInput");
+    const tickerSpeedInput = document.getElementById("tickerSpeedInput");
+    const tickerSpeedValue = document.getElementById("tickerSpeedValue");
+
+    const tickerFontSizeInput = document.getElementById("tickerFontSizeInput");
+    const tickerFontSizeValue = document.getElementById("tickerFontSizeValue");
+
+    const tickerBackgroundInput = document.getElementById("tickerBackgroundInput");
+    const tickerBackgroundValue = document.getElementById("tickerBackgroundValue");
+
+    const tickerTextColorInput = document.getElementById("tickerTextColorInput");
+    const tickerTextColorValue = document.getElementById("tickerTextColorValue");
+
+    const tickerBoldInput = document.getElementById("tickerBoldInput");
+
+    const tickerToggleButton = document.getElementById("tickerToggleButton");
+    const tickerPauseButton = document.getElementById("tickerPauseButton");
+
+    let tickerEnabled = true;
+    let tickerPaused = false;
+
+    /*
+      Utility Functions
+    */
 
     function formatFileSize(bytes) {
       if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -936,6 +1524,10 @@
       });
     }
 
+    /*
+      Media Preview
+    */
+
     function resetPreview() {
       revokeCurrentObjectUrl();
 
@@ -956,7 +1548,7 @@
       mediaInput.value = "";
     }
 
-    function showImage(file, objectUrl) {
+    function showImage(objectUrl) {
       hideAllMedia();
 
       imagePreview.src = objectUrl;
@@ -968,7 +1560,7 @@
       previewStatus.textContent = "फोटो तैयार है";
     }
 
-    function showVideo(file, objectUrl) {
+    function showVideo(objectUrl) {
       hideAllMedia();
 
       videoPreview.src = objectUrl;
@@ -987,6 +1579,15 @@
         return;
       }
 
+      if (
+        !file.type.startsWith("image/") &&
+        !file.type.startsWith("video/")
+      ) {
+        alert("कृपया केवल फोटो या वीडियो फ़ाइल चुनें।");
+        resetPreview();
+        return;
+      }
+
       revokeCurrentObjectUrl();
 
       currentObjectUrl = URL.createObjectURL(file);
@@ -1000,13 +1601,9 @@
       setPreviewMode("contain");
 
       if (file.type.startsWith("image/")) {
-        showImage(file, currentObjectUrl);
+        showImage(currentObjectUrl);
       } else if (file.type.startsWith("video/")) {
-        showVideo(file, currentObjectUrl);
-      } else {
-        resetPreview();
-        previewStatus.textContent = "असमर्थित फ़ाइल";
-        alert("कृपया केवल फोटो या वीडियो फ़ाइल चुनें।");
+        showVideo(currentObjectUrl);
       }
     });
 
@@ -1021,6 +1618,10 @@
     clearButton.addEventListener("click", function () {
       resetPreview();
     });
+
+    /*
+      Fullscreen
+    */
 
     async function enterFullscreen() {
       const target = previewStage;
@@ -1070,14 +1671,10 @@
     }
 
     function updateFullscreenButton() {
-      const active = isFullscreenActive();
-
-      if (active) {
+      if (isFullscreenActive()) {
         fullscreenButton.textContent = "✕ फुल स्क्रीन बंद करें";
-        previewStage.classList.add("fullscreen-active");
       } else {
         fullscreenButton.textContent = "⛶ फुल स्क्रीन";
-        previewStage.classList.remove("fullscreen-active");
       }
     }
 
@@ -1113,6 +1710,134 @@
       "webkitfullscreenchange",
       updateFullscreenButton
     );
+
+    /*
+      Ticker Functions
+    */
+
+    function getTickerText() {
+      const text = tickerTextInput.value.trim();
+
+      if (!text) {
+        return "आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी";
+      }
+
+      return text;
+    }
+
+    function updateTickerText() {
+      const text = getTickerText();
+
+      tickerMessageOne.textContent = text;
+      tickerMessageTwo.textContent = text;
+    }
+
+    function updateTickerSpeed() {
+      const speed = Number(tickerSpeedInput.value);
+
+      tickerTrack.style.animationDuration = `${speed}s`;
+      tickerSpeedValue.textContent = `${speed} सेकंड`;
+    }
+
+    function updateTickerFontSize() {
+      const fontSize = Number(tickerFontSizeInput.value);
+
+      tickerMessageOne.style.fontSize = `${fontSize}px`;
+      tickerMessageTwo.style.fontSize = `${fontSize}px`;
+
+      tickerFontSizeValue.textContent = `${fontSize} px`;
+    }
+
+    function updateTickerBackground() {
+      const color = tickerBackgroundInput.value;
+
+      tickerOverlay.style.backgroundColor = color;
+      tickerBackgroundValue.textContent = color;
+    }
+
+    function updateTickerTextColor() {
+      const color = tickerTextColorInput.value;
+
+      tickerMessageOne.style.color = color;
+      tickerMessageTwo.style.color = color;
+
+      tickerTextColorValue.textContent = color;
+    }
+
+    function updateTickerBold() {
+      const weight = tickerBoldInput.checked ? "800" : "500";
+
+      tickerMessageOne.style.fontWeight = weight;
+      tickerMessageTwo.style.fontWeight = weight;
+    }
+
+    function updateTickerVisibility() {
+      if (tickerEnabled && currentMediaType) {
+        tickerOverlay.classList.add("visible");
+      } else {
+        tickerOverlay.classList.remove("visible");
+      }
+
+      if (tickerPaused) {
+        tickerOverlay.classList.add("paused");
+        tickerPauseButton.textContent = "टिकर चलाएँ";
+      } else {
+        tickerOverlay.classList.remove("paused");
+        tickerPauseButton.textContent = "टिकर रोकें";
+      }
+
+      if (tickerEnabled) {
+        tickerToggleButton.textContent = "टिकर बंद करें";
+      } else {
+        tickerToggleButton.textContent = "टिकर चालू करें";
+      }
+    }
+
+    tickerTextInput.addEventListener("input", function () {
+      updateTickerText();
+    });
+
+    tickerSpeedInput.addEventListener("input", function () {
+      updateTickerSpeed();
+    });
+
+    tickerFontSizeInput.addEventListener("input", function () {
+      updateTickerFontSize();
+    });
+
+    tickerBackgroundInput.addEventListener("input", function () {
+      updateTickerBackground();
+    });
+
+    tickerTextColorInput.addEventListener("input", function () {
+      updateTickerTextColor();
+    });
+
+    tickerBoldInput.addEventListener("change", function () {
+      updateTickerBold();
+    });
+
+    tickerToggleButton.addEventListener("click", function () {
+      tickerEnabled = !tickerEnabled;
+      updateTickerVisibility();
+    });
+
+    tickerPauseButton.addEventListener("click", function () {
+      tickerPaused = !tickerPaused;
+      updateTickerVisibility();
+    });
+
+    /*
+      Initial Setup
+    */
+
+    updateTickerText();
+    updateTickerSpeed();
+    updateTickerFontSize();
+    updateTickerBackground();
+    updateTickerTextColor();
+    updateTickerBold();
+    updateTickerVisibility();
 
     window.addEventListener("beforeunload", function () {
       revokeCurrentObjectUrl();
