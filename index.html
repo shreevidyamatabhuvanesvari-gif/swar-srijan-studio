@@ -182,6 +182,10 @@
   background: #15151a;
 }
 
+.preview-media.fill-mode {
+  object-fit: cover;
+}
+
     .file-info {
       margin-top: 12px;
       padding: 12px;
@@ -192,6 +196,29 @@
       line-height: 1.6;
       overflow-wrap: anywhere;
     }
+    .preview-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.mode-button {
+  padding: 10px 16px;
+  border: 1px solid #d8cff4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #5f4a8b;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mode-button.active {
+  background: #8a4fff;
+  border-color: #8a4fff;
+  color: #ffffff;
+}
 
     .error-message {
       display: none;
@@ -339,6 +366,36 @@
     const videoPreview = document.getElementById("videoPreview");
     const fileInfo = document.getElementById("fileInfo");
     const uploadError = document.getElementById("uploadError");
+    const fitButton = document.getElementById("fitButton");
+const fillButton = document.getElementById("fillButton");
+
+function setPreviewMode(mode) {
+  const mediaElements = [imagePreview, videoPreview];
+
+  if (mode === "fill") {
+    mediaElements.forEach(function (element) {
+      element.classList.add("fill-mode");
+    });
+
+    fitButton.classList.remove("active");
+    fillButton.classList.add("active");
+  } else {
+    mediaElements.forEach(function (element) {
+      element.classList.remove("fill-mode");
+    });
+
+    fillButton.classList.remove("active");
+    fitButton.classList.add("active");
+  }
+}
+
+fitButton.addEventListener("click", function () {
+  setPreviewMode("fit");
+});
+
+fillButton.addEventListener("click", function () {
+  setPreviewMode("fill");
+});
 
     let currentObjectUrl = null;
 
