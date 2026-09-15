@@ -153,6 +153,7 @@
       margin-top: 12px;
       color: #777;
       font-size: 13px;
+      line-height: 1.5;
     }
 
     .preview-area {
@@ -170,21 +171,58 @@
     }
 
     .preview-media {
-  display: block;
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 9 / 16;
-  height: auto;
-  max-height: 75vh;
-  margin: 0 auto;
-  object-fit: contain;
-  border-radius: 16px;
-  background: #15151a;
-}
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 9 / 16;
+      height: auto;
+      max-height: 75vh;
+      margin: 0 auto;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #15151a;
+    }
 
-.preview-media.fill-mode {
-  object-fit: cover;
-}
+    .preview-media.fill-mode {
+      object-fit: cover;
+    }
+
+    .preview-controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mode-button {
+      padding: 10px 16px;
+      border: 1px solid #d8cff4;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #5f4a8b;
+      cursor: pointer;
+      font-size: 14px;
+      transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .mode-button:hover {
+      border-color: #8a4fff;
+    }
+
+    .mode-button:focus-visible {
+      outline: 3px solid rgba(138, 79, 255, 0.25);
+      outline-offset: 3px;
+    }
+
+    .mode-button.active {
+      background: #8a4fff;
+      border-color: #8a4fff;
+      color: #ffffff;
+    }
 
     .file-info {
       margin-top: 12px;
@@ -196,29 +234,14 @@
       line-height: 1.6;
       overflow-wrap: anywhere;
     }
-    .preview-controls {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-}
 
-.mode-button {
-  padding: 10px 16px;
-  border: 1px solid #d8cff4;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #5f4a8b;
-  cursor: pointer;
-  font-size: 14px;
-}
+    .file-info-row {
+      margin: 2px 0;
+    }
 
-.mode-button.active {
-  background: #8a4fff;
-  border-color: #8a4fff;
-  color: #ffffff;
-}
+    .file-info-label {
+      font-weight: bold;
+    }
 
     .error-message {
       display: none;
@@ -228,6 +251,7 @@
       background: #fff0f0;
       color: #b42318;
       font-size: 14px;
+      line-height: 1.5;
     }
 
     .error-message.visible {
@@ -261,6 +285,10 @@
       .upload-panel {
         grid-column: auto;
       }
+
+      .preview-media {
+        max-width: min(100%, 420px);
+      }
     }
   </style>
 </head>
@@ -287,7 +315,7 @@
       <section class="panel upload-panel">
         <div class="icon">📤</div>
 
-        <h2>Media Upload & Preview</h2>
+        <h2>Media Upload &amp; Preview</h2>
 
         <p>
           अपनी फोटो या वीडियो चुनिए। चुनी गई मीडिया फ़ाइल का preview नीचे दिखाई देगा।
@@ -306,7 +334,12 @@
             समर्थित प्रकार: JPG, PNG, WEBP, GIF, MP4, WEBM आदि
           </div>
 
-          <div id="uploadError" class="error-message"></div>
+          <div
+            id="uploadError"
+            class="error-message"
+            role="alert"
+            aria-live="polite"
+          ></div>
         </div>
 
         <div id="previewArea" class="preview-area">
@@ -316,6 +349,7 @@
             id="imagePreview"
             class="preview-media"
             alt="चुनी गई फोटो का प्रीव्यू"
+            hidden
           />
 
           <video
@@ -323,9 +357,34 @@
             class="preview-media"
             controls
             playsinline
+            hidden
           ></video>
 
-          <div id="fileInfo" class="file-info"></div>
+          <div
+            id="fileInfo"
+            class="file-info"
+            aria-live="polite"
+          ></div>
+
+          <div class="preview-controls">
+            <button
+              id="fitButton"
+              type="button"
+              class="mode-button active"
+              aria-pressed="true"
+            >
+              पूरा दिखाएँ
+            </button>
+
+            <button
+              id="fillButton"
+              type="button"
+              class="mode-button"
+              aria-pressed="false"
+            >
+              फ्रेम भरें
+            </button>
+          </div>
         </div>
       </section>
 
@@ -367,41 +426,18 @@
     const fileInfo = document.getElementById("fileInfo");
     const uploadError = document.getElementById("uploadError");
     const fitButton = document.getElementById("fitButton");
-const fillButton = document.getElementById("fillButton");
-
-function setPreviewMode(mode) {
-  const mediaElements = [imagePreview, videoPreview];
-
-  if (mode === "fill") {
-    mediaElements.forEach(function (element) {
-      element.classList.add("fill-mode");
-    });
-
-    fitButton.classList.remove("active");
-    fillButton.classList.add("active");
-  } else {
-    mediaElements.forEach(function (element) {
-      element.classList.remove("fill-mode");
-    });
-
-    fillButton.classList.remove("active");
-    fitButton.classList.add("active");
-  }
-}
-
-fitButton.addEventListener("click", function () {
-  setPreviewMode("fit");
-});
-
-fillButton.addEventListener("click", function () {
-  setPreviewMode("fill");
-});
+    const fillButton = document.getElementById("fillButton");
 
     let currentObjectUrl = null;
 
     function hidePreviews() {
-      imagePreview.style.display = "none";
-      videoPreview.style.display = "none";
+      imagePreview.hidden = true;
+      videoPreview.hidden = true;
+
+      imagePreview.removeAttribute("src");
+      videoPreview.removeAttribute("src");
+
+      videoPreview.load();
     }
 
     function showError(message) {
@@ -426,10 +462,48 @@ fillButton.addEventListener("click", function () {
       return (bytes / (1024 * 1024)).toFixed(2) + " MB";
     }
 
+    function setPreviewMode(mode) {
+      const mediaElements = [
+        imagePreview,
+        videoPreview
+      ];
+
+      if (mode === "fill") {
+        mediaElements.forEach(function (element) {
+          element.classList.add("fill-mode");
+        });
+
+        fitButton.classList.remove("active");
+        fillButton.classList.add("active");
+
+        fitButton.setAttribute("aria-pressed", "false");
+        fillButton.setAttribute("aria-pressed", "true");
+      } else {
+        mediaElements.forEach(function (element) {
+          element.classList.remove("fill-mode");
+        });
+
+        fillButton.classList.remove("active");
+        fitButton.classList.add("active");
+
+        fillButton.setAttribute("aria-pressed", "false");
+        fitButton.setAttribute("aria-pressed", "true");
+      }
+    }
+
+    fitButton.addEventListener("click", function () {
+      setPreviewMode("fit");
+    });
+
+    fillButton.addEventListener("click", function () {
+      setPreviewMode("fill");
+    });
+
     mediaInput.addEventListener("change", function () {
       clearError();
       hidePreviews();
       previewArea.classList.remove("visible");
+      fileInfo.textContent = "";
 
       if (currentObjectUrl) {
         URL.revokeObjectURL(currentObjectUrl);
@@ -455,20 +529,53 @@ fillButton.addEventListener("click", function () {
 
       if (isImage) {
         imagePreview.src = currentObjectUrl;
-        imagePreview.style.display = "block";
+        imagePreview.hidden = false;
       }
 
       if (isVideo) {
         videoPreview.src = currentObjectUrl;
-        videoPreview.style.display = "block";
+        videoPreview.hidden = false;
       }
 
-      fileInfo.innerHTML = `
-        <strong>फ़ाइल नाम:</strong> ${file.name}<br>
-        <strong>फ़ाइल प्रकार:</strong> ${file.type || "अज्ञात"}<br>
-        <strong>फ़ाइल आकार:</strong> ${formatFileSize(file.size)}
-      `;
+      const fileNameRow = document.createElement("div");
+      fileNameRow.className = "file-info-row";
 
+      const fileNameLabel = document.createElement("span");
+      fileNameLabel.className = "file-info-label";
+      fileNameLabel.textContent = "फ़ाइल नाम: ";
+
+      fileNameRow.appendChild(fileNameLabel);
+      fileNameRow.appendChild(document.createTextNode(file.name));
+
+      const fileTypeRow = document.createElement("div");
+      fileTypeRow.className = "file-info-row";
+
+      const fileTypeLabel = document.createElement("span");
+      fileTypeLabel.className = "file-info-label";
+      fileTypeLabel.textContent = "फ़ाइल प्रकार: ";
+
+      fileTypeRow.appendChild(fileTypeLabel);
+      fileTypeRow.appendChild(
+        document.createTextNode(file.type || "अज्ञात")
+      );
+
+      const fileSizeRow = document.createElement("div");
+      fileSizeRow.className = "file-info-row";
+
+      const fileSizeLabel = document.createElement("span");
+      fileSizeLabel.className = "file-info-label";
+      fileSizeLabel.textContent = "फ़ाइल आकार: ";
+
+      fileSizeRow.appendChild(fileSizeLabel);
+      fileSizeRow.appendChild(
+        document.createTextNode(formatFileSize(file.size))
+      );
+
+      fileInfo.appendChild(fileNameRow);
+      fileInfo.appendChild(fileTypeRow);
+      fileInfo.appendChild(fileSizeRow);
+
+      setPreviewMode("fit");
       previewArea.classList.add("visible");
     });
   </script>
