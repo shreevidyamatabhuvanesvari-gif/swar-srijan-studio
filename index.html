@@ -32,7 +32,14 @@
       min-height: 100vh;
       background: linear-gradient(180deg, #020617 0%, var(--bg) 100%);
       color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans Devanagari",
+        "Nirmala UI",
+        sans-serif;
     }
 
     button,
@@ -191,7 +198,10 @@
       border-radius: 11px;
       background: #182235;
       color: var(--text);
-      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease,
+        border-color 0.12s ease;
     }
 
     .btn:hover {
@@ -228,12 +238,32 @@
       border: 1px dashed #475569;
       border-radius: 16px;
       background:
-        linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.03) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.03) 75%);
+        linear-gradient(
+          45deg,
+          rgba(255, 255, 255, 0.03) 25%,
+          transparent 25%
+        ),
+        linear-gradient(
+          -45deg,
+          rgba(255, 255, 255, 0.03) 25%,
+          transparent 25%
+        ),
+        linear-gradient(
+          45deg,
+          transparent 75%,
+          rgba(255, 255, 255, 0.03) 75%
+        ),
+        linear-gradient(
+          -45deg,
+          transparent 75%,
+          rgba(255, 255, 255, 0.03) 75%
+        );
       background-size: 24px 24px;
-      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      background-position:
+        0 0,
+        0 12px,
+        12px -12px,
+        -12px 0;
     }
 
     .preview-frame {
@@ -307,6 +337,7 @@
     }
 
     /* ===== TICKER ===== */
+
     .ticker-overlay {
       position: absolute;
       right: 0;
@@ -392,25 +423,15 @@
     }
 
     /*
-      टिकर अब सीधे लगातार भागने के बजाय:
-      0–15%   : स्क्रीन पर धीरे-धीरे प्रवेश
-      15–72%  : पढ़ने के लिए स्थिर
-      72–100% : धीरे-धीरे बाहर
+      टिकर लगातार दाएँ से बाएँ चलेगा।
+      यहाँ कोई hold / स्थिर रहने वाला चरण नहीं है।
     */
     @keyframes tickerMoveRightToLeft {
-      0% {
+      from {
         transform: translateX(100%);
       }
 
-      15% {
-        transform: translateX(0);
-      }
-
-      72% {
-        transform: translateX(0);
-      }
-
-      100% {
+      to {
         transform: translateX(-100%);
       }
     }
@@ -489,7 +510,10 @@
   <div class="page">
     <header>
       <h1>🎙️ Swar Srijan Studio</h1>
-      <p class="subtitle">फोटो/वीडियो अपलोड करें, 9:16 रील प्रीव्यू देखें और न्यूज़ टिकर को तुरंत कस्टमाइज़ करें।</p>
+      <p class="subtitle">
+        फोटो/वीडियो अपलोड करें, 9:16 रील प्रीव्यू देखें और न्यूज़ टिकर को तुरंत
+        कस्टमाइज़ करें।
+      </p>
     </header>
 
     <main class="layout">
@@ -499,21 +523,40 @@
 
           <div class="field">
             <label for="mediaInput">फोटो या वीडियो चुनें</label>
-            <input id="mediaInput" type="file" accept="image/*,video/*" />
-            <div class="helper">समर्थित प्रकार: सामान्य image/* और video/* फ़ाइलें</div>
+            <input
+              id="mediaInput"
+              type="file"
+              accept="image/*,video/*"
+            />
+            <div class="helper">
+              समर्थित प्रकार: सामान्य image/* और video/* फ़ाइलें
+            </div>
           </div>
 
           <div class="button-row">
-            <button id="fitButton" class="btn primary" type="button">फ्रेम भरें</button>
-            <button id="containButton" class="btn" type="button">पूरा दिखाएँ</button>
+            <button id="fitButton" class="btn primary" type="button">
+              फ्रेम भरें
+            </button>
+
+            <button id="containButton" class="btn" type="button">
+              पूरा दिखाएँ
+            </button>
           </div>
 
           <div class="button-row" style="margin-top: 10px;">
-            <button id="fullscreenButton" class="btn blue" type="button">⛶ फुल स्क्रीन</button>
-            <button id="removeButton" class="btn danger" type="button">हटाएँ</button>
+            <button id="fullscreenButton" class="btn blue" type="button">
+              ⛶ फुल स्क्रीन
+            </button>
+
+            <button id="removeButton" class="btn danger" type="button">
+              हटाएँ
+            </button>
           </div>
 
-          <div id="fileInfo" class="file-info" aria-live="polite">अभी कोई मीडिया चुना नहीं गया।</div>
+          <div id="fileInfo" class="file-info" aria-live="polite">
+            अभी कोई मीडिया चुना नहीं गया।
+          </div>
+
           <div id="statusText" class="status" aria-live="polite"></div>
         </div>
 
@@ -522,52 +565,124 @@
 
           <div class="field">
             <label for="tickerTextInput">टिकर टेक्स्ट</label>
-            <textarea id="tickerTextInput" placeholder="यहाँ अपना न्यूज़ संदेश लिखें…">आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी</textarea>
+
+            <textarea
+              id="tickerTextInput"
+              placeholder="यहाँ अपना न्यूज़ संदेश लिखें…"
+            >आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी</textarea>
           </div>
 
           <div class="field">
             <label for="tickerSpeedInput">टिकर गति</label>
+
             <div class="range-row">
-              <input id="tickerSpeedInput" type="range" min="30" max="180" step="5" value="90" />
-              <span id="tickerSpeedValue" class="range-value">90 सेकंड</span>
+              <input
+                id="tickerSpeedInput"
+                type="range"
+                min="30"
+                max="180"
+                step="5"
+                value="90"
+              />
+
+              <span id="tickerSpeedValue" class="range-value">
+                90 सेकंड
+              </span>
             </div>
           </div>
 
           <div class="field">
             <label for="tickerFontSizeInput">फ़ॉन्ट आकार</label>
+
             <div class="range-row">
-              <input id="tickerFontSizeInput" type="range" min="16" max="40" step="1" value="24" />
-              <span id="tickerFontSizeValue" class="range-value">24 px</span>
+              <input
+                id="tickerFontSizeInput"
+                type="range"
+                min="16"
+                max="40"
+                step="1"
+                value="24"
+              />
+
+              <span id="tickerFontSizeValue" class="range-value">
+                24 px
+              </span>
             </div>
           </div>
 
           <div class="two-col">
             <div class="field">
-              <label for="tickerBackgroundInput">टिकर बैकग्राउंड</label>
-              <input id="tickerBackgroundInput" type="color" value="#111827" />
-              <div id="tickerBackgroundValue" class="helper">#111827</div>
+              <label for="tickerBackgroundInput">
+                टिकर बैकग्राउंड
+              </label>
+
+              <input
+                id="tickerBackgroundInput"
+                type="color"
+                value="#111827"
+              />
+
+              <div
+                id="tickerBackgroundValue"
+                class="helper"
+              >
+                #111827
+              </div>
             </div>
 
             <div class="field">
-              <label for="tickerTextColorInput">टेक्स्ट रंग</label>
-              <input id="tickerTextColorInput" type="color" value="#ffffff" />
-              <div id="tickerTextColorValue" class="helper">#ffffff</div>
+              <label for="tickerTextColorInput">
+                टेक्स्ट रंग
+              </label>
+
+              <input
+                id="tickerTextColorInput"
+                type="color"
+                value="#ffffff"
+              />
+
+              <div
+                id="tickerTextColorValue"
+                class="helper"
+              >
+                #ffffff
+              </div>
             </div>
           </div>
 
           <div class="field">
             <label class="check-row" for="tickerBoldInput">
-              <input id="tickerBoldInput" type="checkbox" checked />
+              <input
+                id="tickerBoldInput"
+                type="checkbox"
+                checked
+              />
               टेक्स्ट बोल्ड रखें
             </label>
           </div>
 
           <div class="button-row">
-            <button id="tickerToggleButton" class="btn primary" type="button">टिकर बंद करें</button>
-            <button id="tickerPauseButton" class="btn" type="button">टिकर रोकें</button>
+            <button
+              id="tickerToggleButton"
+              class="btn primary"
+              type="button"
+            >
+              टिकर बंद करें
+            </button>
+
+            <button
+              id="tickerPauseButton"
+              class="btn"
+              type="button"
+            >
+              टिकर रोकें
+            </button>
           </div>
 
-          <div class="helper">टिकर मीडिया के निचले हिस्से में overlay के रूप में दिखाई देगा।</div>
+          <div class="helper">
+            टिकर मीडिया के निचले हिस्से में overlay के रूप में
+            दिखाई देगा।
+          </div>
         </div>
       </section>
 
@@ -575,42 +690,98 @@
         <h2>📱 9:16 रील प्रीव्यू</h2>
 
         <div class="preview-stage">
-          <div id="previewFrame" class="preview-frame" aria-label="रील प्रीव्यू">
-            <div id="placeholder" class="preview-placeholder">
+          <div
+            id="previewFrame"
+            class="preview-frame"
+            aria-label="रील प्रीव्यू"
+          >
+            <div
+              id="placeholder"
+              class="preview-placeholder"
+            >
               यहाँ आपकी फोटो या वीडियो 9:16 फ़ॉर्मेट में दिखाई देगा।
             </div>
 
-            <img id="imagePreview" class="preview-media" alt="अपलोड की गई फोटो का प्रीव्यू" />
-            <video id="videoPreview" class="preview-media" controls playsinline preload="metadata"></video>
+            <img
+              id="imagePreview"
+              class="preview-media"
+              alt="अपलोड की गई फोटो का प्रीव्यू"
+            />
 
-            <div id="tickerOverlay" class="ticker-overlay" aria-label="न्यूज़ टिकर">
-              <div id="tickerLabel" class="ticker-label">BREAKING</div>
+            <video
+              id="videoPreview"
+              class="preview-media"
+              controls
+              playsinline
+              webkit-playsinline
+              preload="metadata"
+            ></video>
 
-              <div class="ticker-window">
-                <div id="tickerTrack" class="ticker-track">
-                  <span id="tickerMessageOne" class="ticker-message">आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी</span>
-                  <span class="ticker-separator" aria-hidden="true">◆</span>
-                  <span id="tickerMessageTwo" class="ticker-message">आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी</span>
+            <div
+              id="tickerOverlay"
+              class="ticker-overlay"
+              aria-label="न्यूज़ टिकर"
+            >
+              <div
+                id="tickerLabel"
+                class="ticker-label"
+              >
+                BREAKING
+              </div>
+
+              <div class="ticker-window" id="tickerWindow">
+                <div
+                  id="tickerTrack"
+                  class="ticker-track"
+                >
+                  <span
+                    id="tickerMessageOne"
+                    class="ticker-message"
+                  >
+                    आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी
+                  </span>
+
+                  <span
+                    class="ticker-separator"
+                    aria-hidden="true"
+                  >
+                    ◆
+                  </span>
+
+                  <span
+                    id="tickerMessageTwo"
+                    class="ticker-message"
+                  >
+                    आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="file-info" style="margin-top: 12px;">
+        <div
+          class="file-info"
+          style="margin-top: 12px;"
+        >
           <strong>स्टेटस:</strong>
-          <span id="previewStateText">प्रीव्यू तैयार है। मीडिया अपलोड करें।</span>
+          <span id="previewStateText">
+            प्रीव्यू तैयार है। मीडिया अपलोड करें।
+          </span>
         </div>
       </section>
     </main>
 
-    <div class="footer-note">Swar Srijan Studio · Front-end prototype · बाहरी API के बिना</div>
+    <div class="footer-note">
+      Swar Srijan Studio · Front-end prototype · बाहरी API के बिना
+    </div>
   </div>
 
   <script>
     "use strict";
 
     // ===== DOM ELEMENTS =====
+
     const mediaInput = document.getElementById("mediaInput");
     const imagePreview = document.getElementById("imagePreview");
     const videoPreview = document.getElementById("videoPreview");
@@ -622,34 +793,56 @@
 
     const fitButton = document.getElementById("fitButton");
     const containButton = document.getElementById("containButton");
-    const fullscreenButton = document.getElementById("fullscreenButton");
+    const fullscreenButton =
+      document.getElementById("fullscreenButton");
     const removeButton = document.getElementById("removeButton");
 
-    const tickerOverlay = document.getElementById("tickerOverlay");
-    const tickerTrack = document.getElementById("tickerTrack");
-    const tickerMessageOne = document.getElementById("tickerMessageOne");
-    const tickerMessageTwo = document.getElementById("tickerMessageTwo");
-    const tickerTextInput = document.getElementById("tickerTextInput");
-    const tickerSpeedInput = document.getElementById("tickerSpeedInput");
-    const tickerSpeedValue = document.getElementById("tickerSpeedValue");
-    const tickerFontSizeInput = document.getElementById("tickerFontSizeInput");
-    const tickerFontSizeValue = document.getElementById("tickerFontSizeValue");
-    const tickerBackgroundInput = document.getElementById("tickerBackgroundInput");
-    const tickerBackgroundValue = document.getElementById("tickerBackgroundValue");
-    const tickerTextColorInput = document.getElementById("tickerTextColorInput");
-    const tickerTextColorValue = document.getElementById("tickerTextColorValue");
-    const tickerBoldInput = document.getElementById("tickerBoldInput");
-    const tickerToggleButton = document.getElementById("tickerToggleButton");
-    const tickerPauseButton = document.getElementById("tickerPauseButton");
+    const tickerOverlay =
+      document.getElementById("tickerOverlay");
+    const tickerWindow =
+      document.getElementById("tickerWindow");
+    const tickerTrack =
+      document.getElementById("tickerTrack");
+    const tickerMessageOne =
+      document.getElementById("tickerMessageOne");
+    const tickerMessageTwo =
+      document.getElementById("tickerMessageTwo");
+    const tickerTextInput =
+      document.getElementById("tickerTextInput");
+    const tickerSpeedInput =
+      document.getElementById("tickerSpeedInput");
+    const tickerSpeedValue =
+      document.getElementById("tickerSpeedValue");
+    const tickerFontSizeInput =
+      document.getElementById("tickerFontSizeInput");
+    const tickerFontSizeValue =
+      document.getElementById("tickerFontSizeValue");
+    const tickerBackgroundInput =
+      document.getElementById("tickerBackgroundInput");
+    const tickerBackgroundValue =
+      document.getElementById("tickerBackgroundValue");
+    const tickerTextColorInput =
+      document.getElementById("tickerTextColorInput");
+    const tickerTextColorValue =
+      document.getElementById("tickerTextColorValue");
+    const tickerBoldInput =
+      document.getElementById("tickerBoldInput");
+    const tickerToggleButton =
+      document.getElementById("tickerToggleButton");
+    const tickerPauseButton =
+      document.getElementById("tickerPauseButton");
 
     // ===== STATE =====
+
     let currentMediaType = null; // "image" | "video" | null
     let currentObjectUrl = null;
     let objectFitMode = "cover";
+
     let tickerEnabled = true;
     let tickerPaused = false;
 
     // ===== HELPERS =====
+
     function setStatus(message) {
       statusText.textContent = message;
     }
@@ -659,9 +852,12 @@
     }
 
     function formatBytes(bytes) {
-      if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
+      if (!Number.isFinite(bytes) || bytes <= 0) {
+        return "0 B";
+      }
 
       const units = ["B", "KB", "MB", "GB"];
+
       const exponent = Math.min(
         Math.floor(Math.log(bytes) / Math.log(1024)),
         units.length - 1
@@ -669,7 +865,9 @@
 
       const value = bytes / Math.pow(1024, exponent);
 
-      return `${value.toFixed(exponent === 0 ? 0 : 2)} ${units[exponent]}`;
+      return `${value.toFixed(
+        exponent === 0 ? 0 : 2
+      )} ${units[exponent]}`;
     }
 
     function revokeObjectUrl() {
@@ -684,12 +882,21 @@
       videoPreview.style.objectFit = objectFitMode;
     }
 
+    // ===== TICKER =====
+
     function updateTickerVisibility() {
-      const shouldShow = tickerEnabled && currentMediaType !== null;
+      const shouldShow =
+        tickerEnabled && currentMediaType !== null;
 
-      tickerOverlay.classList.toggle("visible", shouldShow);
+      tickerOverlay.classList.toggle(
+        "visible",
+        shouldShow
+      );
 
-      tickerOverlay.classList.toggle("paused", tickerPaused);
+      tickerOverlay.classList.toggle(
+        "paused",
+        tickerPaused
+      );
 
       tickerPauseButton.textContent = tickerPaused
         ? "टिकर चलाएँ"
@@ -703,7 +910,10 @@
     function getTickerText() {
       const text = tickerTextInput.value.trim();
 
-      return text || "आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी";
+      return (
+        text ||
+        "आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी"
+      );
     }
 
     function updateTickerText() {
@@ -716,32 +926,55 @@
     function updateTickerSpeed() {
       const speed = Number(tickerSpeedInput.value);
 
-      if (!Number.isFinite(speed)) return;
+      if (!Number.isFinite(speed) || speed <= 0) {
+        return;
+      }
 
+      /*
+        पूरा ticker cycle इसी duration में होगा।
+        कोई hold / स्थिर रहने वाला चरण नहीं है।
+      */
       tickerTrack.style.animationDuration = `${speed}s`;
-      tickerSpeedValue.textContent = `${speed} सेकंड`;
+
+      tickerSpeedValue.textContent =
+        `${speed} सेकंड`;
     }
 
     function updateTickerFontSize() {
-      const fontSize = Number(tickerFontSizeInput.value);
+      const fontSize =
+        Number(tickerFontSizeInput.value);
 
-      if (!Number.isFinite(fontSize)) return;
+      if (!Number.isFinite(fontSize)) {
+        return;
+      }
 
-      tickerMessageOne.style.fontSize = `${fontSize}px`;
-      tickerMessageTwo.style.fontSize = `${fontSize}px`;
+      tickerMessageOne.style.fontSize =
+        `${fontSize}px`;
 
-      tickerFontSizeValue.textContent = `${fontSize} px`;
+      tickerMessageTwo.style.fontSize =
+        `${fontSize}px`;
+
+      tickerFontSizeValue.textContent =
+        `${fontSize} px`;
     }
 
     function updateTickerBackground() {
-      const color = tickerBackgroundInput.value;
+      const color =
+        tickerBackgroundInput.value;
 
+      /*
+        Overlay और उसके अंदर ticker window दोनों को
+        एक ही background रंग दिया गया है।
+      */
       tickerOverlay.style.backgroundColor = color;
+      tickerWindow.style.backgroundColor = color;
+
       tickerBackgroundValue.textContent = color;
     }
 
     function updateTickerTextColor() {
-      const color = tickerTextColorInput.value;
+      const color =
+        tickerTextColorInput.value;
 
       tickerMessageOne.style.color = color;
       tickerMessageTwo.style.color = color;
@@ -750,11 +983,15 @@
     }
 
     function updateTickerBold() {
-      const weight = tickerBoldInput.checked ? "800" : "500";
+      const weight = tickerBoldInput.checked
+        ? "800"
+        : "500";
 
       tickerMessageOne.style.fontWeight = weight;
       tickerMessageTwo.style.fontWeight = weight;
     }
+
+    // ===== MEDIA =====
 
     function hideAllMedia() {
       imagePreview.style.display = "none";
@@ -779,11 +1016,14 @@
       hideAllMedia();
       applyObjectFit();
 
-      fileInfo.textContent = "अभी कोई मीडिया चुना नहीं गया।";
+      fileInfo.textContent =
+        "अभी कोई मीडिया चुना नहीं गया।";
 
       setStatus("");
 
-      setPreviewState("प्रीव्यू तैयार है। मीडिया अपलोड करें।");
+      setPreviewState(
+        "प्रीव्यू तैयार है। मीडिया अपलोड करें।"
+      );
 
       updateTickerVisibility();
     }
@@ -791,11 +1031,16 @@
     function showImage(file) {
       revokeObjectUrl();
 
-      currentObjectUrl = URL.createObjectURL(file);
+      currentObjectUrl =
+        URL.createObjectURL(file);
+
       currentMediaType = "image";
 
       imagePreview.src = currentObjectUrl;
-      imagePreview.alt = file.name || "अपलोड की गई फोटो";
+
+      imagePreview.alt =
+        file.name ||
+        "अपलोड की गई फोटो";
 
       imagePreview.style.display = "block";
       videoPreview.style.display = "none";
@@ -806,9 +1051,13 @@
       fileInfo.textContent =
         `${file.name} · ${formatBytes(file.size)} · फोटो`;
 
-      setStatus("फोटो सफलतापूर्वक लोड हो गई है.");
+      setStatus(
+        "फोटो सफलतापूर्वक लोड हो गई है।"
+      );
 
-      setPreviewState("फोटो 9:16 प्रीव्यू में दिखाई जा रही है।");
+      setPreviewState(
+        "फोटो 9:16 प्रीव्यू में दिखाई जा रही है।"
+      );
 
       updateTickerVisibility();
     }
@@ -816,7 +1065,9 @@
     function showVideo(file) {
       revokeObjectUrl();
 
-      currentObjectUrl = URL.createObjectURL(file);
+      currentObjectUrl =
+        URL.createObjectURL(file);
+
       currentMediaType = "video";
 
       videoPreview.src = currentObjectUrl;
@@ -830,9 +1081,13 @@
       fileInfo.textContent =
         `${file.name} · ${formatBytes(file.size)} · वीडियो`;
 
-      setStatus("वीडियो सफलतापूर्वक लोड हो गया है।");
+      setStatus(
+        "वीडियो सफलतापूर्वक लोड हो गया है।"
+      );
 
-      setPreviewState("वीडियो 9:16 प्रीव्यू में तैयार है।");
+      setPreviewState(
+        "वीडियो 9:16 प्रीव्यू में तैयार है।"
+      );
 
       updateTickerVisibility();
     }
@@ -843,8 +1098,11 @@
         return;
       }
 
-      const isImage = file.type.startsWith("image/");
-      const isVideo = file.type.startsWith("video/");
+      const isImage =
+        file.type.startsWith("image/");
+
+      const isVideo =
+        file.type.startsWith("video/");
 
       if (!isImage && !isVideo) {
         resetPreview();
@@ -853,7 +1111,9 @@
           "यह फ़ाइल image या video नहीं है। दूसरी फ़ाइल चुनें।"
         );
 
-        setPreviewState("अमान्य मीडिया प्रकार।");
+        setPreviewState(
+          "अमान्य मीडिया प्रकार।"
+        );
 
         return;
       }
@@ -865,6 +1125,8 @@
       }
     }
 
+    // ===== FULLSCREEN =====
+
     async function toggleFullscreen() {
       try {
         if (!document.fullscreenElement) {
@@ -873,67 +1135,120 @@
           await document.exitFullscreen();
         }
       } catch (error) {
-        setStatus("फुल स्क्रीन इस ब्राउज़र में उपलब्ध नहीं है।");
+        setStatus(
+          "फुल स्क्रीन इस ब्राउज़र में उपलब्ध नहीं है।"
+        );
       }
     }
 
     // ===== EVENTS =====
-    mediaInput.addEventListener("change", () => {
-      const [file] = mediaInput.files || [];
-      handleMediaSelection(file);
-    });
 
-    fitButton.addEventListener("click", () => {
-      objectFitMode = "cover";
+    mediaInput.addEventListener(
+      "change",
+      () => {
+        const [file] =
+          mediaInput.files || [];
 
-      applyObjectFit();
+        handleMediaSelection(file);
+      }
+    );
 
-      setStatus("फ्रेम भरें मोड सक्रिय है।");
-    });
+    fitButton.addEventListener(
+      "click",
+      () => {
+        objectFitMode = "cover";
 
-    containButton.addEventListener("click", () => {
-      objectFitMode = "contain";
+        applyObjectFit();
 
-      applyObjectFit();
+        setStatus(
+          "फ्रेम भरें मोड सक्रिय है।"
+        );
+      }
+    );
 
-      setStatus("पूरा दिखाएँ मोड सक्रिय है।");
-    });
+    containButton.addEventListener(
+      "click",
+      () => {
+        objectFitMode = "contain";
 
-    fullscreenButton.addEventListener("click", toggleFullscreen);
+        applyObjectFit();
 
-    removeButton.addEventListener("click", resetPreview);
+        setStatus(
+          "पूरा दिखाएँ मोड सक्रिय है।"
+        );
+      }
+    );
 
-    tickerTextInput.addEventListener("input", updateTickerText);
+    fullscreenButton.addEventListener(
+      "click",
+      toggleFullscreen
+    );
 
-    tickerSpeedInput.addEventListener("input", updateTickerSpeed);
+    removeButton.addEventListener(
+      "click",
+      resetPreview
+    );
 
-    tickerFontSizeInput.addEventListener("input", updateTickerFontSize);
+    tickerTextInput.addEventListener(
+      "input",
+      updateTickerText
+    );
 
-    tickerBackgroundInput.addEventListener("input", updateTickerBackground);
+    tickerSpeedInput.addEventListener(
+      "input",
+      updateTickerSpeed
+    );
 
-    tickerTextColorInput.addEventListener("input", updateTickerTextColor);
+    tickerFontSizeInput.addEventListener(
+      "input",
+      updateTickerFontSize
+    );
 
-    tickerBoldInput.addEventListener("change", updateTickerBold);
+    tickerBackgroundInput.addEventListener(
+      "input",
+      updateTickerBackground
+    );
 
-    tickerToggleButton.addEventListener("click", () => {
-      tickerEnabled = !tickerEnabled;
+    tickerTextColorInput.addEventListener(
+      "input",
+      updateTickerTextColor
+    );
 
-      updateTickerVisibility();
-    });
+    tickerBoldInput.addEventListener(
+      "change",
+      updateTickerBold
+    );
 
-    tickerPauseButton.addEventListener("click", () => {
-      tickerPaused = !tickerPaused;
+    tickerToggleButton.addEventListener(
+      "click",
+      () => {
+        tickerEnabled = !tickerEnabled;
 
-      updateTickerVisibility();
-    });
+        updateTickerVisibility();
+      }
+    );
 
-    document.addEventListener("fullscreenchange", () => {
-      fullscreenButton.textContent = document.fullscreenElement
-        ? "⛶ फुल स्क्रीन बंद करें"
-        : "⛶ फुल स्क्रीन";
-    });
+    tickerPauseButton.addEventListener(
+      "click",
+      () => {
+        tickerPaused = !tickerPaused;
+
+        updateTickerVisibility();
+      }
+    );
+
+    document.addEventListener(
+      "fullscreenchange",
+      () => {
+        fullscreenButton.textContent =
+          document.fullscreenElement
+            ? "⛶ फुल स्क्रीन बंद करें"
+            : "⛶ फुल स्क्रीन";
+      }
+    );
 
     // ===== INITIALIZATION =====
+
     tickerSpeedInput.value = "90";
     tickerFontSizeInput.value = "24";
 
