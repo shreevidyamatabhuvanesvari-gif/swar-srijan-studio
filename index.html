@@ -320,6 +320,9 @@
       background: #111827;
       color: #fff;
       border-top: 1px solid rgba(255, 255, 255, 0.22);
+
+      /* वीडियो के native controls को बाधित न करे */
+      pointer-events: none;
     }
 
     .ticker-overlay.visible {
@@ -341,6 +344,7 @@
       font-size: 14px;
       font-weight: 900;
       letter-spacing: 0.04em;
+      pointer-events: none;
     }
 
     .ticker-window {
@@ -351,6 +355,7 @@
       display: flex;
       align-items: center;
       background: #111827;
+      pointer-events: none;
     }
 
     .ticker-track {
@@ -360,10 +365,12 @@
       white-space: nowrap;
       transform: translateX(100%);
       animation-name: tickerMoveRightToLeft;
+      animation-duration: 90s;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
       animation-play-state: running;
       will-change: transform;
+      pointer-events: none;
     }
 
     .ticker-message {
@@ -373,6 +380,7 @@
       font-size: 24px;
       font-weight: 800;
       line-height: 1.2;
+      pointer-events: none;
     }
 
     .ticker-separator {
@@ -380,13 +388,29 @@
       margin-right: 90px;
       color: #facc15;
       font-size: 10px;
+      pointer-events: none;
     }
 
+    /*
+      टिकर अब सीधे लगातार भागने के बजाय:
+      0–15%   : स्क्रीन पर धीरे-धीरे प्रवेश
+      15–72%  : पढ़ने के लिए स्थिर
+      72–100% : धीरे-धीरे बाहर
+    */
     @keyframes tickerMoveRightToLeft {
-      from {
+      0% {
         transform: translateX(100%);
       }
-      to {
+
+      15% {
+        transform: translateX(0);
+      }
+
+      72% {
+        transform: translateX(0);
+      }
+
+      100% {
         transform: translateX(-100%);
       }
     }
@@ -441,15 +465,21 @@
       }
 
       .ticker-label {
-        flex-basis: 78px;
+        flex-basis: 88px;
+        font-size: 13px;
       }
 
       .ticker-message {
-        padding-right: 62px;
+        padding-right: 78px;
+        font-size: 24px;
       }
 
       .ticker-separator {
-        margin-right: 62px;
+        margin-right: 78px;
+      }
+
+      .ticker-overlay {
+        height: 58px;
       }
     }
   </style>
@@ -498,8 +528,8 @@
           <div class="field">
             <label for="tickerSpeedInput">टिकर गति</label>
             <div class="range-row">
-              <input id="tickerSpeedInput" type="range" min="12" max="60" step="1" value="30" />
-              <span id="tickerSpeedValue" class="range-value">30 सेकंड</span>
+              <input id="tickerSpeedInput" type="range" min="30" max="180" step="5" value="90" />
+              <span id="tickerSpeedValue" class="range-value">90 सेकंड</span>
             </div>
           </div>
 
@@ -555,6 +585,7 @@
 
             <div id="tickerOverlay" class="ticker-overlay" aria-label="न्यूज़ टिकर">
               <div id="tickerLabel" class="ticker-label">BREAKING</div>
+
               <div class="ticker-window">
                 <div id="tickerTrack" class="ticker-track">
                   <span id="tickerMessageOne" class="ticker-message">आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी</span>
@@ -576,7 +607,6 @@
     <div class="footer-note">Swar Srijan Studio · Front-end prototype · बाहरी API के बिना</div>
   </div>
 
-  
   <script>
     "use strict";
 
@@ -630,9 +660,15 @@
 
     function formatBytes(bytes) {
       if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
+
       const units = ["B", "KB", "MB", "GB"];
-      const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+      const exponent = Math.min(
+        Math.floor(Math.log(bytes) / Math.log(1024)),
+        units.length - 1
+      );
+
       const value = bytes / Math.pow(1024, exponent);
+
       return `${value.toFixed(exponent === 0 ? 0 : 2)} ${units[exponent]}`;
     }
 
@@ -649,58 +685,73 @@
     }
 
     function updateTickerVisibility() {
-      // महत्वपूर्ण: ticker अब media type पर निर्भर होने के साथ-साथ
-      // upload होने के बाद तुरंत update होता है। इससे overlay छिपा नहीं रहता।
       const shouldShow = tickerEnabled && currentMediaType !== null;
 
       tickerOverlay.classList.toggle("visible", shouldShow);
 
       tickerOverlay.classList.toggle("paused", tickerPaused);
-      tickerPauseButton.textContent = tickerPaused ? "टिकर चलाएँ" : "टिकर रोकें";
-      tickerToggleButton.textContent = tickerEnabled ? "टिकर बंद करें" : "टिकर चालू करें";
+
+      tickerPauseButton.textContent = tickerPaused
+        ? "टिकर चलाएँ"
+        : "टिकर रोकें";
+
+      tickerToggleButton.textContent = tickerEnabled
+        ? "टिकर बंद करें"
+        : "टिकर चालू करें";
     }
 
     function getTickerText() {
       const text = tickerTextInput.value.trim();
+
       return text || "आपकी महत्वपूर्ण सूचना यहाँ लगातार चलेगी";
     }
 
     function updateTickerText() {
       const text = getTickerText();
+
       tickerMessageOne.textContent = text;
       tickerMessageTwo.textContent = text;
     }
 
     function updateTickerSpeed() {
       const speed = Number(tickerSpeedInput.value);
+
       if (!Number.isFinite(speed)) return;
+
       tickerTrack.style.animationDuration = `${speed}s`;
       tickerSpeedValue.textContent = `${speed} सेकंड`;
     }
 
     function updateTickerFontSize() {
       const fontSize = Number(tickerFontSizeInput.value);
+
       if (!Number.isFinite(fontSize)) return;
+
       tickerMessageOne.style.fontSize = `${fontSize}px`;
       tickerMessageTwo.style.fontSize = `${fontSize}px`;
+
       tickerFontSizeValue.textContent = `${fontSize} px`;
     }
 
     function updateTickerBackground() {
       const color = tickerBackgroundInput.value;
+
       tickerOverlay.style.backgroundColor = color;
       tickerBackgroundValue.textContent = color;
     }
 
     function updateTickerTextColor() {
       const color = tickerTextColorInput.value;
+
       tickerMessageOne.style.color = color;
       tickerMessageTwo.style.color = color;
+
       tickerTextColorValue.textContent = color;
     }
 
     function updateTickerBold() {
       const weight = tickerBoldInput.checked ? "800" : "500";
+
       tickerMessageOne.style.fontWeight = weight;
       tickerMessageTwo.style.fontWeight = weight;
     }
@@ -708,16 +759,20 @@
     function hideAllMedia() {
       imagePreview.style.display = "none";
       videoPreview.style.display = "none";
+
       videoPreview.pause();
+
       placeholder.style.display = "flex";
     }
 
     function resetPreview() {
       revokeObjectUrl();
+
       currentMediaType = null;
       mediaInput.value = "";
 
       imagePreview.removeAttribute("src");
+
       videoPreview.removeAttribute("src");
       videoPreview.load();
 
@@ -725,43 +780,60 @@
       applyObjectFit();
 
       fileInfo.textContent = "अभी कोई मीडिया चुना नहीं गया।";
+
       setStatus("");
+
       setPreviewState("प्रीव्यू तैयार है। मीडिया अपलोड करें।");
+
       updateTickerVisibility();
     }
 
     function showImage(file) {
       revokeObjectUrl();
+
       currentObjectUrl = URL.createObjectURL(file);
       currentMediaType = "image";
 
       imagePreview.src = currentObjectUrl;
       imagePreview.alt = file.name || "अपलोड की गई फोटो";
+
       imagePreview.style.display = "block";
       videoPreview.style.display = "none";
       placeholder.style.display = "none";
+
       applyObjectFit();
 
-      fileInfo.textContent = `${file.name} · ${formatBytes(file.size)} · फोटो`;
-      setStatus("फोटो सफलतापूर्वक लोड हो गई है।");
+      fileInfo.textContent =
+        `${file.name} · ${formatBytes(file.size)} · फोटो`;
+
+      setStatus("फोटो सफलतापूर्वक लोड हो गई है.");
+
       setPreviewState("फोटो 9:16 प्रीव्यू में दिखाई जा रही है।");
+
       updateTickerVisibility();
     }
 
     function showVideo(file) {
       revokeObjectUrl();
+
       currentObjectUrl = URL.createObjectURL(file);
       currentMediaType = "video";
 
       videoPreview.src = currentObjectUrl;
+
       videoPreview.style.display = "block";
       imagePreview.style.display = "none";
       placeholder.style.display = "none";
+
       applyObjectFit();
 
-      fileInfo.textContent = `${file.name} · ${formatBytes(file.size)} · वीडियो`;
+      fileInfo.textContent =
+        `${file.name} · ${formatBytes(file.size)} · वीडियो`;
+
       setStatus("वीडियो सफलतापूर्वक लोड हो गया है।");
+
       setPreviewState("वीडियो 9:16 प्रीव्यू में तैयार है।");
+
       updateTickerVisibility();
     }
 
@@ -776,8 +848,13 @@
 
       if (!isImage && !isVideo) {
         resetPreview();
-        setStatus("यह फ़ाइल image या video नहीं है। दूसरी फ़ाइल चुनें।");
+
+        setStatus(
+          "यह फ़ाइल image या video नहीं है। दूसरी फ़ाइल चुनें।"
+        );
+
         setPreviewState("अमान्य मीडिया प्रकार।");
+
         return;
       }
 
@@ -808,43 +885,58 @@
 
     fitButton.addEventListener("click", () => {
       objectFitMode = "cover";
+
       applyObjectFit();
+
       setStatus("फ्रेम भरें मोड सक्रिय है।");
     });
 
     containButton.addEventListener("click", () => {
       objectFitMode = "contain";
+
       applyObjectFit();
+
       setStatus("पूरा दिखाएँ मोड सक्रिय है।");
     });
 
     fullscreenButton.addEventListener("click", toggleFullscreen);
+
     removeButton.addEventListener("click", resetPreview);
 
     tickerTextInput.addEventListener("input", updateTickerText);
+
     tickerSpeedInput.addEventListener("input", updateTickerSpeed);
+
     tickerFontSizeInput.addEventListener("input", updateTickerFontSize);
+
     tickerBackgroundInput.addEventListener("input", updateTickerBackground);
+
     tickerTextColorInput.addEventListener("input", updateTickerTextColor);
+
     tickerBoldInput.addEventListener("change", updateTickerBold);
 
     tickerToggleButton.addEventListener("click", () => {
       tickerEnabled = !tickerEnabled;
+
       updateTickerVisibility();
     });
 
     tickerPauseButton.addEventListener("click", () => {
       tickerPaused = !tickerPaused;
+
       updateTickerVisibility();
     });
 
     document.addEventListener("fullscreenchange", () => {
-      fullscreenButton.textContent = document.fullscreenElement ? "⛶ फुल स्क्रीन बंद करें" : "⛶ फुल स्क्रीन";
+      fullscreenButton.textContent = document.fullscreenElement
+        ? "⛶ फुल स्क्रीन बंद करें"
+        : "⛶ फुल स्क्रीन";
     });
 
     // ===== INITIALIZATION =====
-    tickerSpeedInput.value = "30";
+    tickerSpeedInput.value = "90";
     tickerFontSizeInput.value = "24";
+
     updateTickerText();
     updateTickerSpeed();
     updateTickerFontSize();
