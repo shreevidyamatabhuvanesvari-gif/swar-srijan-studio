@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0f172a" />
   <title>Swar Srijan Studio</title>
 
@@ -32,8 +32,14 @@
       min-height: 100vh;
       background: linear-gradient(180deg, #020617 0%, var(--bg) 100%);
       color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans Devanagari",
+        "Nirmala UI",
+        sans-serif;
     }
 
     button,
@@ -44,6 +50,7 @@
 
     button {
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .page {
@@ -186,7 +193,7 @@
     }
 
     .btn {
-      min-height: 42px;
+      min-height: 44px;
       padding: 10px 12px;
       border: 1px solid var(--border);
       border-radius: 11px;
@@ -196,6 +203,7 @@
         transform 0.12s ease,
         background 0.12s ease,
         border-color 0.12s ease;
+      touch-action: manipulation;
     }
 
     .btn:hover {
@@ -221,6 +229,11 @@
     .btn.blue {
       background: #0c4a6e;
       border-color: #38bdf8;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
     }
 
     .preview-stage {
@@ -269,6 +282,7 @@
       border: 1px solid #475569;
       background: #000;
       box-shadow: 0 20px 55px rgba(0, 0, 0, 0.45);
+      isolation: isolate;
     }
 
     .preview-media {
@@ -291,6 +305,51 @@
       text-align: center;
       color: #64748b;
       line-height: 1.6;
+    }
+
+    /*
+      Custom mobile-friendly video button.
+      यह native video controls के ऊपर नहीं है,
+      इसलिए ticker भी video control को block नहीं करता।
+    */
+    .video-play-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 30;
+      width: 64px;
+      height: 64px;
+      transform: translate(-50%, -50%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.82);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+      touch-action: manipulation;
+    }
+
+    .video-play-button.visible {
+      display: flex;
+    }
+
+    .video-play-button:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 3px;
+    }
+
+    .video-controls-row {
+      display: none;
+      grid-template-columns: 1fr;
+      margin-top: 10px;
+    }
+
+    .video-controls-row.visible {
+      display: grid;
     }
 
     .file-info {
@@ -341,8 +400,6 @@
       background: #111827;
       color: #fff;
       border-top: 1px solid rgba(255, 255, 255, 0.22);
-
-      /* वीडियो के native controls को block न करे */
       pointer-events: none;
     }
 
@@ -412,7 +469,6 @@
       pointer-events: none;
     }
 
-    /* लगातार दाएँ से बाएँ — कोई hold नहीं */
     @keyframes tickerMoveRightToLeft {
       from {
         transform: translateX(100%);
@@ -489,6 +545,26 @@
       .ticker-overlay {
         height: 58px;
       }
+
+      .video-play-button {
+        width: 58px;
+        height: 58px;
+        font-size: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .ticker-track {
+        animation-duration: 180s;
+      }
+
+      .btn {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -498,6 +574,7 @@
 
     <header>
       <h1>🎙️ Swar Srijan Studio</h1>
+
       <p class="subtitle">
         फोटो/वीडियो अपलोड करें, 9:16 रील प्रीव्यू देखें और न्यूज़ टिकर को तुरंत
         कस्टमाइज़ करें।
@@ -567,6 +644,19 @@
           </div>
 
           <div
+            id="videoControlsRow"
+            class="video-controls-row"
+          >
+            <button
+              id="videoPlayButton"
+              class="btn primary"
+              type="button"
+            >
+              ▶ वीडियो चलाएँ
+            </button>
+          </div>
+
+          <div
             id="fileInfo"
             class="file-info"
             aria-live="polite"
@@ -580,6 +670,7 @@
             aria-live="polite"
           ></div>
         </div>
+
 
         <!-- TICKER SETTINGS -->
         <div class="panel">
@@ -726,6 +817,7 @@
 
       </section>
 
+
       <!-- ===== RIGHT SIDE ===== -->
       <section class="panel">
 
@@ -762,6 +854,16 @@
               webkit-playsinline
               preload="metadata"
             ></video>
+
+            <!-- MOBILE/TAP PLAY CONTROL -->
+            <button
+              id="videoPlayOverlayButton"
+              class="video-play-button"
+              type="button"
+              aria-label="वीडियो चलाएँ"
+            >
+              ▶
+            </button>
 
             <!-- TICKER -->
             <div
@@ -827,6 +929,7 @@
         </div>
 
       </section>
+
     </main>
 
     <div class="footer-note">
@@ -835,8 +938,10 @@
 
   </div>
 
+
   <script>
     "use strict";
+
 
     // =========================================================
     // DOM ELEMENTS
@@ -878,56 +983,101 @@
     const removeButton =
       document.getElementById("removeButton");
 
+    const videoControlsRow =
+      document.getElementById("videoControlsRow");
+
+    const videoPlayButton =
+      document.getElementById("videoPlayButton");
+
+    const videoPlayOverlayButton =
+      document.getElementById(
+        "videoPlayOverlayButton"
+      );
+
     const tickerOverlay =
-      document.getElementById("tickerOverlay");
+      document.getElementById(
+        "tickerOverlay"
+      );
 
     const tickerWindow =
-      document.getElementById("tickerWindow");
+      document.getElementById(
+        "tickerWindow"
+      );
 
     const tickerTrack =
-      document.getElementById("tickerTrack");
+      document.getElementById(
+        "tickerTrack"
+      );
 
     const tickerMessageOne =
-      document.getElementById("tickerMessageOne");
+      document.getElementById(
+        "tickerMessageOne"
+      );
 
     const tickerMessageTwo =
-      document.getElementById("tickerMessageTwo");
+      document.getElementById(
+        "tickerMessageTwo"
+      );
 
     const tickerTextInput =
-      document.getElementById("tickerTextInput");
+      document.getElementById(
+        "tickerTextInput"
+      );
 
     const tickerSpeedInput =
-      document.getElementById("tickerSpeedInput");
+      document.getElementById(
+        "tickerSpeedInput"
+      );
 
     const tickerSpeedValue =
-      document.getElementById("tickerSpeedValue");
+      document.getElementById(
+        "tickerSpeedValue"
+      );
 
     const tickerFontSizeInput =
-      document.getElementById("tickerFontSizeInput");
+      document.getElementById(
+        "tickerFontSizeInput"
+      );
 
     const tickerFontSizeValue =
-      document.getElementById("tickerFontSizeValue");
+      document.getElementById(
+        "tickerFontSizeValue"
+      );
 
     const tickerBackgroundInput =
-      document.getElementById("tickerBackgroundInput");
+      document.getElementById(
+        "tickerBackgroundInput"
+      );
 
     const tickerBackgroundValue =
-      document.getElementById("tickerBackgroundValue");
+      document.getElementById(
+        "tickerBackgroundValue"
+      );
 
     const tickerTextColorInput =
-      document.getElementById("tickerTextColorInput");
+      document.getElementById(
+        "tickerTextColorInput"
+      );
 
     const tickerTextColorValue =
-      document.getElementById("tickerTextColorValue");
+      document.getElementById(
+        "tickerTextColorValue"
+      );
 
     const tickerBoldInput =
-      document.getElementById("tickerBoldInput");
+      document.getElementById(
+        "tickerBoldInput"
+      );
 
     const tickerToggleButton =
-      document.getElementById("tickerToggleButton");
+      document.getElementById(
+        "tickerToggleButton"
+      );
 
     const tickerPauseButton =
-      document.getElementById("tickerPauseButton");
+      document.getElementById(
+        "tickerPauseButton"
+      );
 
 
     // =========================================================
@@ -940,6 +1090,13 @@
 
     let tickerEnabled = true;
     let tickerPaused = false;
+
+    /*
+      यह token हर नए media selection पर बदलता है।
+      इससे पुराने async media events नए video state को
+      गलती से overwrite नहीं करेंगे।
+    */
+    let mediaLoadToken = 0;
 
 
     // =========================================================
@@ -971,13 +1128,15 @@
 
       const exponent = Math.min(
         Math.floor(
-          Math.log(bytes) / Math.log(1024)
+          Math.log(bytes) /
+          Math.log(1024)
         ),
         units.length - 1
       );
 
       const value =
-        bytes / Math.pow(1024, exponent);
+        bytes /
+        Math.pow(1024, exponent);
 
       return `${value.toFixed(
         exponent === 0 ? 0 : 2
@@ -986,7 +1145,10 @@
 
     function revokeObjectUrl() {
       if (currentObjectUrl) {
-        URL.revokeObjectURL(currentObjectUrl);
+        URL.revokeObjectURL(
+          currentObjectUrl
+        );
+
         currentObjectUrl = null;
       }
     }
@@ -1053,13 +1215,16 @@
 
     function updateTickerSpeed() {
       const speed =
-        Number(tickerSpeedInput.value);
+        Number(
+          tickerSpeedInput.value
+        );
 
       if (
         !Number.isFinite(speed) ||
         speed <= 0
       ) {
-        return;
+        tickerSpeedInput.value = "90";
+        return updateTickerSpeed();
       }
 
       tickerTrack.style.animationDuration =
@@ -1071,10 +1236,17 @@
 
     function updateTickerFontSize() {
       const fontSize =
-        Number(tickerFontSizeInput.value);
+        Number(
+          tickerFontSizeInput.value
+        );
 
-      if (!Number.isFinite(fontSize)) {
-        return;
+      if (
+        !Number.isFinite(fontSize) ||
+        fontSize < 16 ||
+        fontSize > 40
+      ) {
+        tickerFontSizeInput.value = "24";
+        return updateTickerFontSize();
       }
 
       tickerMessageOne.style.fontSize =
@@ -1111,6 +1283,9 @@
       tickerMessageTwo.style.color =
         color;
 
+      tickerBackgroundValue.textContent =
+        tickerBackgroundInput.value;
+
       tickerTextColorValue.textContent =
         color;
     }
@@ -1130,77 +1305,328 @@
 
 
     // =========================================================
+    // VIDEO UI
+    // =========================================================
+
+    function isVideoReady() {
+      return (
+        currentMediaType === "video" &&
+        videoPreview.readyState >= 2
+      );
+    }
+
+    function updateVideoControls() {
+      const isVideo =
+        currentMediaType === "video";
+
+      videoControlsRow.classList.toggle(
+        "visible",
+        isVideo
+      );
+
+      if (!isVideo) {
+        videoPlayOverlayButton.classList.remove(
+          "visible"
+        );
+
+        return;
+      }
+
+      if (videoPreview.ended) {
+        videoPlayButton.textContent =
+          "↻ वीडियो फिर चलाएँ";
+
+        videoPlayOverlayButton.textContent =
+          "↻";
+
+        videoPlayOverlayButton.setAttribute(
+          "aria-label",
+          "वीडियो फिर चलाएँ"
+        );
+
+        videoPlayOverlayButton.classList.add(
+          "visible"
+        );
+
+        return;
+      }
+
+      if (!videoPreview.paused) {
+        videoPlayButton.textContent =
+          "⏸ वीडियो रोकें";
+
+        videoPlayOverlayButton.classList.remove(
+          "visible"
+        );
+
+        return;
+      }
+
+      videoPlayButton.textContent =
+        "▶ वीडियो चलाएँ";
+
+      videoPlayOverlayButton.textContent =
+        "▶";
+
+      videoPlayOverlayButton.setAttribute(
+        "aria-label",
+        "वीडियो चलाएँ"
+      );
+
+      /*
+        जब video अभी ready नहीं हुआ है तो
+        बड़ा Play overlay नहीं दिखाएँ।
+      */
+      if (isVideoReady()) {
+        videoPlayOverlayButton.classList.add(
+          "visible"
+        );
+      } else {
+        videoPlayOverlayButton.classList.remove(
+          "visible"
+        );
+      }
+    }
+
+
+    // =========================================================
     // VIDEO PLAYBACK
     // =========================================================
 
     function configureVideoElement() {
       /*
-        पुराने source/state को साफ करके नए local video
-        के लिए video element को fresh playback state में रखें।
+        मोबाइल browser compatibility के लिए
+        DOM properties + HTML attributes दोनों।
       */
 
       videoPreview.controls = true;
+
       videoPreview.playsInline = true;
-      videoPreview.preload = "metadata";
+
+      videoPreview.setAttribute(
+        "playsinline",
+        ""
+      );
+
+      videoPreview.setAttribute(
+        "webkit-playsinline",
+        ""
+      );
+
+      videoPreview.preload =
+        "metadata";
+
+      videoPreview.autoplay =
+        false;
 
       /*
-        Autoplay intentionally OFF है।
-        User native Play button से वीडियो चलाएगा।
+        Autoplay off रखें।
+        User tap/click से play होगा।
       */
-      videoPreview.autoplay = false;
-      videoPreview.muted = false;
-      videoPreview.defaultMuted = false;
-
       videoPreview.removeAttribute(
         "autoplay"
       );
+
+      videoPreview.defaultMuted =
+        false;
+
+      videoPreview.muted =
+        false;
 
       videoPreview.removeAttribute(
         "muted"
       );
     }
 
+    async function playVideo() {
+      if (
+        currentMediaType !== "video"
+      ) {
+        return;
+      }
+
+      if (!videoPreview.src) {
+        setStatus(
+          "पहले कोई वीडियो चुनें।"
+        );
+        return;
+      }
+
+      try {
+        /*
+          कभी-कभी source loaded है लेकिन readyState
+          अभी 2 तक नहीं पहुँचा। play() फिर भी browser
+          को loading शुरू करने देगा।
+        */
+        const playPromise =
+          videoPreview.play();
+
+        if (
+          playPromise &&
+          typeof playPromise.then ===
+            "function"
+        ) {
+          await playPromise;
+        }
+
+        setStatus(
+          "वीडियो चल रहा है।"
+        );
+
+        setPreviewState(
+          "वीडियो प्ले हो रहा है।"
+        );
+
+        updateVideoControls();
+
+      } catch (error) {
+        /*
+          Browser autoplay policy या unsupported media
+          जैसी समस्याओं को silently ignore न करें।
+        */
+
+        const message =
+          error &&
+          error.name ===
+            "NotAllowedError"
+            ? "ब्राउज़र ने playback को रोका। Play बटन को दोबारा टैप करें।"
+            : error &&
+                error.name ===
+                  "NotSupportedError"
+              ? "यह वीडियो format इस browser में समर्थित नहीं है।"
+              : "वीडियो अभी नहीं चल पाया। फ़ाइल या video format जाँचें।";
+
+        setStatus(message);
+
+        setPreviewState(
+          "वीडियो playback शुरू नहीं हो सका।"
+        );
+
+        updateVideoControls();
+      }
+    }
+
+    function pauseVideo() {
+      if (
+        currentMediaType !== "video"
+      ) {
+        return;
+      }
+
+      videoPreview.pause();
+
+      setStatus(
+        "वीडियो रुका हुआ है। Play बटन दबाएँ।"
+      );
+
+      setPreviewState(
+        "वीडियो रुका हुआ है।"
+      );
+
+      updateVideoControls();
+    }
+
+    async function toggleVideoPlayback() {
+      if (
+        currentMediaType !== "video"
+      ) {
+        return;
+      }
+
+      if (
+        videoPreview.ended
+      ) {
+        videoPreview.currentTime = 0;
+      }
+
+      if (videoPreview.paused) {
+        await playVideo();
+      } else {
+        pauseVideo();
+      }
+    }
+
+
+    // =========================================================
+    // VIDEO FILE LOADING
+    // =========================================================
+
     function loadVideoFile(file) {
+      /*
+        हर नए file selection के लिए नया token।
+      */
+      const loadToken =
+        ++mediaLoadToken;
+
+      /*
+        पुराने video playback को रोकें।
+      */
+      videoPreview.pause();
+
+      /*
+        पुराने object URL को release करें।
+      */
       revokeObjectUrl();
 
-      currentObjectUrl =
+      /*
+        नया local object URL बनाएँ।
+      */
+      const objectUrl =
         URL.createObjectURL(file);
 
-      currentMediaType = "video";
+      currentObjectUrl =
+        objectUrl;
+
+      currentMediaType =
+        "video";
 
       /*
-        Image state को पूरी तरह साफ करें।
+        Image को hide करें।
       */
-      imagePreview.pause?.();
+      imagePreview.removeAttribute(
+        "src"
+      );
 
-      imagePreview.removeAttribute("src");
-      imagePreview.style.display = "none";
-
-      placeholder.style.display = "none";
+      imagePreview.style.display =
+        "none";
 
       /*
-        Video को visible करने से पहले
-        playback configuration करें।
+        Placeholder hide करें।
+      */
+      placeholder.style.display =
+        "none";
+
+      /*
+        Video configuration।
       */
       configureVideoElement();
 
-      videoPreview.style.display = "block";
-      videoPreview.objectFit = objectFitMode;
+      videoPreview.style.display =
+        "block";
+
+      videoPreview.style.objectFit =
+        objectFitMode;
 
       /*
-        पुराने source को हटाकर नया source लगाएँ।
+        पुराने source को पूरी तरह साफ करें।
       */
-      videoPreview.pause();
-      videoPreview.removeAttribute("src");
+      videoPreview.removeAttribute(
+        "src"
+      );
+
+      /*
+        Browser को old resource छोड़ने दें।
+      */
       videoPreview.load();
 
+      /*
+        नया source लगाएँ।
+      */
       videoPreview.src =
-        currentObjectUrl;
+        objectUrl;
 
       /*
-        यह महत्वपूर्ण है:
-        local object URL बदलने के बाद browser को
-        नए media source को load करने के लिए स्पष्ट command।
+        नए source के लिए load शुरू करें।
       */
       videoPreview.load();
 
@@ -1215,7 +1641,37 @@
         "वीडियो लोड हो रहा है।"
       );
 
+      updateVideoControls();
       updateTickerVisibility();
+
+      /*
+        यह event-based readiness check है।
+        कोई forced autoplay नहीं।
+      */
+      const verifyReady = () => {
+        if (
+          loadToken !== mediaLoadToken
+        ) {
+          return;
+        }
+
+        if (
+          currentMediaType !== "video"
+        ) {
+          return;
+        }
+
+        updateVideoControls();
+      };
+
+      /*
+        Metadata आने पर controls सक्रिय करें।
+      */
+      videoPreview.addEventListener(
+        "loadedmetadata",
+        verifyReady,
+        { once: true }
+      );
     }
 
 
@@ -1224,33 +1680,46 @@
     // =========================================================
 
     function hideAllMedia() {
-      imagePreview.style.display = "none";
-      videoPreview.style.display = "none";
+      imagePreview.style.display =
+        "none";
+
+      videoPreview.style.display =
+        "none";
 
       videoPreview.pause();
 
-      placeholder.style.display = "flex";
+      placeholder.style.display =
+        "flex";
+
+      videoPlayOverlayButton.classList.remove(
+        "visible"
+      );
+
+      videoControlsRow.classList.remove(
+        "visible"
+      );
     }
 
     function resetPreview() {
-      /*
-        पहले playback रोकें ताकि पुराने media source
-        से कोई state pending न रहे।
-      */
+      ++mediaLoadToken;
+
       videoPreview.pause();
 
-      /*
-        पुराना blob URL release करें।
-      */
       revokeObjectUrl();
 
-      currentMediaType = null;
+      currentMediaType =
+        null;
 
       mediaInput.value = "";
 
-      imagePreview.removeAttribute("src");
+      imagePreview.removeAttribute(
+        "src"
+      );
 
-      videoPreview.removeAttribute("src");
+      videoPreview.removeAttribute(
+        "src"
+      );
+
       videoPreview.load();
 
       hideAllMedia();
@@ -1270,25 +1739,29 @@
     }
 
     function showImage(file) {
-      /*
-        पहले पुराना media resource साफ करें।
-      */
+      ++mediaLoadToken;
+
       videoPreview.pause();
+
       revokeObjectUrl();
 
       currentObjectUrl =
         URL.createObjectURL(file);
 
-      currentMediaType = "image";
+      currentMediaType =
+        "image";
 
       /*
-        Video source पूरी तरह साफ करें।
+        Video source साफ करें।
       */
-      videoPreview.removeAttribute("src");
+      videoPreview.removeAttribute(
+        "src"
+      );
+
       videoPreview.load();
 
       /*
-        Image source सेट करें।
+        Image source।
       */
       imagePreview.src =
         currentObjectUrl;
@@ -1305,6 +1778,14 @@
 
       placeholder.style.display =
         "none";
+
+      videoControlsRow.classList.remove(
+        "visible"
+      );
+
+      videoPlayOverlayButton.classList.remove(
+        "visible"
+      );
 
       applyObjectFit();
 
@@ -1332,11 +1813,15 @@
         return;
       }
 
+      const fileType =
+        String(file.type || "")
+          .toLowerCase();
+
       const isImage =
-        file.type.startsWith("image/");
+        fileType.startsWith("image/");
 
       const isVideo =
-        file.type.startsWith("video/");
+        fileType.startsWith("video/");
 
       if (!isImage && !isVideo) {
         resetPreview();
@@ -1361,13 +1846,39 @@
 
 
     // =========================================================
+    // IMAGE EVENTS
+    // =========================================================
+
+    imagePreview.addEventListener(
+      "error",
+      () => {
+        if (
+          currentMediaType !== "image"
+        ) {
+          return;
+        }
+
+        setStatus(
+          "फोटो प्रीव्यू में समस्या आई।"
+        );
+
+        setPreviewState(
+          "फोटो लोड नहीं हो सकी।"
+        );
+      }
+    );
+
+
+    // =========================================================
     // VIDEO EVENTS
     // =========================================================
 
     videoPreview.addEventListener(
       "loadstart",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
@@ -1380,23 +1891,25 @@
     videoPreview.addEventListener(
       "loadedmetadata",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
-
-        const duration =
-          Number.isFinite(
-            videoPreview.duration
-          )
-            ? videoPreview.duration
-            : null;
 
         let message =
           "वीडियो तैयार है। Play बटन दबाएँ।";
 
-        if (duration !== null) {
+        if (
+          Number.isFinite(
+            videoPreview.duration
+          ) &&
+          videoPreview.duration >= 0
+        ) {
           message +=
-            ` · अवधि ${Math.round(duration)} सेकंड`;
+            ` · अवधि ${Math.round(
+              videoPreview.duration
+            )} सेकंड`;
         }
 
         setStatus(message);
@@ -1404,60 +1917,68 @@
         setPreviewState(
           "वीडियो 9:16 प्रीव्यू में तैयार है।"
         );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "loadeddata",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
-        /*
-          loadeddata का अर्थ है कि पहला video frame
-          उपलब्ध हो चुका है।
-        */
         setPreviewState(
           "वीडियो का पहला फ्रेम तैयार है। Play दबाएँ।"
         );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "canplay",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
         setStatus(
           "वीडियो चलाने के लिए Play बटन दबाएँ।"
         );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "play",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
         setStatus(
-          "वीडियो चल रहा है।"
+          "वीडियो चलने की तैयारी कर रहा है…"
         );
 
-        setPreviewState(
-          "वीडियो प्ले हो रहा है।"
-        );
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "playing",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
@@ -1468,54 +1989,68 @@
         setPreviewState(
           "वीडियो प्ले हो रहा है।"
         );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "pause",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
-        /*
-          reset/remove के दौरान अनावश्यक status न बदलें।
-        */
         if (!videoPreview.src) {
           return;
         }
 
         if (videoPreview.ended) {
+          updateVideoControls();
           return;
         }
 
         setStatus(
           "वीडियो रुका हुआ है। Play बटन दबाएँ।"
         );
+
+        setPreviewState(
+          "वीडियो रुका हुआ है।"
+        );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "ended",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
         setStatus(
-          "वीडियो पूरा हो गया है।"
+          "वीडियो पूरा हो गया है। फिर चलाने के लिए Play दबाएँ।"
         );
 
         setPreviewState(
           "वीडियो प्लेबैक पूरा हो गया।"
         );
+
+        updateVideoControls();
       }
     );
 
     videoPreview.addEventListener(
       "waiting",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
@@ -1526,9 +2061,26 @@
     );
 
     videoPreview.addEventListener(
+      "stalled",
+      () => {
+        if (
+          currentMediaType !== "video"
+        ) {
+          return;
+        }
+
+        setStatus(
+          "वीडियो की loading रुक गई है…"
+        );
+      }
+    );
+
+    videoPreview.addEventListener(
       "error",
       () => {
-        if (currentMediaType !== "video") {
+        if (
+          currentMediaType !== "video"
+        ) {
           return;
         }
 
@@ -1545,23 +2097,25 @@
 
         if (code === 1) {
           message =
-            "वीडियो लोड करना रद्द हो गया। फ़ाइल फिर से चुनें।";
+            "वीडियो loading रद्द हो गई। फ़ाइल फिर से चुनें।";
         } else if (code === 2) {
           message =
-            "वीडियो लोड करते समय ब्राउज़र में समस्या हुई।";
+            "वीडियो लोड करते समय समस्या हुई।";
         } else if (code === 3) {
           message =
-            "वीडियो डिकोड नहीं हो पाया। फ़ाइल का codec समर्थित न हो सकता है।";
+            "वीडियो decode नहीं हो पाया। इसका codec browser में समर्थित न हो सकता है।";
         } else if (code === 4) {
           message =
-            "वीडियो का format/codec इस ब्राउज़र द्वारा समर्थित नहीं है।";
+            "वीडियो format या codec इस browser में समर्थित नहीं है।";
         }
 
         setStatus(message);
 
         setPreviewState(
-          "वीडियो प्लेबैक में समस्या है।"
+          "वीडियो playback में समस्या है।"
         );
+
+        updateVideoControls();
       }
     );
 
@@ -1572,12 +2126,14 @@
 
     async function toggleFullscreen() {
       try {
-        if (!document.fullscreenElement) {
+        if (
+          !document.fullscreenElement
+        ) {
           if (
             !previewFrame.requestFullscreen
           ) {
             throw new Error(
-              "Fullscreen API उपलब्ध नहीं है"
+              "Fullscreen API unavailable"
             );
           }
 
@@ -1585,6 +2141,7 @@
         } else {
           await document.exitFullscreen();
         }
+
       } catch (error) {
         setStatus(
           "फुल स्क्रीन इस ब्राउज़र में उपलब्ध नहीं है।"
@@ -1610,42 +2167,32 @@
     fitButton.addEventListener(
       "click",
       () => {
-        objectFitMode = "cover";
+        objectFitMode =
+          "cover";
 
         applyObjectFit();
 
-        if (
+        setStatus(
           currentMediaType === "video"
-        ) {
-          setStatus(
-            "फ्रेम भरें मोड सक्रिय है। वीडियो चलाने के लिए Play दबाएँ।"
-          );
-        } else {
-          setStatus(
-            "फ्रेम भरें मोड सक्रिय है।"
-          );
-        }
+            ? "फ्रेम भरें मोड सक्रिय है।"
+            : "फ्रेम भरें मोड सक्रिय है।"
+        );
       }
     );
 
     containButton.addEventListener(
       "click",
       () => {
-        objectFitMode = "contain";
+        objectFitMode =
+          "contain";
 
         applyObjectFit();
 
-        if (
+        setStatus(
           currentMediaType === "video"
-        ) {
-          setStatus(
-            "पूरा दिखाएँ मोड सक्रिय है। वीडियो चलाने के लिए Play दबाएँ।"
-          );
-        } else {
-          setStatus(
-            "पूरा दिखाएँ मोड सक्रिय है।"
-          );
-        }
+            ? "पूरा दिखाएँ मोड सक्रिय है।"
+            : "पूरा दिखाएँ मोड सक्रिय है।"
+        );
       }
     );
 
@@ -1659,36 +2206,80 @@
       resetPreview
     );
 
+    /*
+      Main custom video button
+    */
+    videoPlayButton.addEventListener(
+      "click",
+      async () => {
+        await toggleVideoPlayback();
+      }
+    );
+
+    /*
+      Large center Play button
+    */
+    videoPlayOverlayButton.addEventListener(
+      "click",
+      async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        await toggleVideoPlayback();
+      }
+    );
+
+    /*
+      Text update
+    */
     tickerTextInput.addEventListener(
       "input",
       updateTickerText
     );
 
+    /*
+      Speed
+    */
     tickerSpeedInput.addEventListener(
       "input",
       updateTickerSpeed
     );
 
+    /*
+      Font size
+    */
     tickerFontSizeInput.addEventListener(
       "input",
       updateTickerFontSize
     );
 
+    /*
+      Background
+    */
     tickerBackgroundInput.addEventListener(
       "input",
       updateTickerBackground
     );
 
+    /*
+      Text color
+    */
     tickerTextColorInput.addEventListener(
       "input",
       updateTickerTextColor
     );
 
+    /*
+      Bold
+    */
     tickerBoldInput.addEventListener(
       "change",
       updateTickerBold
     );
 
+    /*
+      Ticker ON/OFF
+    */
     tickerToggleButton.addEventListener(
       "click",
       () => {
@@ -1699,6 +2290,9 @@
       }
     );
 
+    /*
+      Ticker pause/play
+    */
     tickerPauseButton.addEventListener(
       "click",
       () => {
@@ -1709,6 +2303,9 @@
       }
     );
 
+    /*
+      Fullscreen label
+    */
     document.addEventListener(
       "fullscreenchange",
       () => {
@@ -1724,9 +2321,11 @@
     // INITIALIZATION
     // =========================================================
 
-    tickerSpeedInput.value = "90";
+    tickerSpeedInput.value =
+      "90";
 
-    tickerFontSizeInput.value = "24";
+    tickerFontSizeInput.value =
+      "24";
 
     updateTickerText();
     updateTickerSpeed();
@@ -1735,6 +2334,7 @@
     updateTickerTextColor();
     updateTickerBold();
 
+    configureVideoElement();
     applyObjectFit();
 
     resetPreview();
