@@ -314,7 +314,7 @@
       left: 0;
       z-index: 50;
       display: none;
-      height: 42px;
+      height: 58px;
       overflow: hidden;
       align-items: stretch;
       background: #111827;
@@ -331,14 +331,14 @@
     }
 
     .ticker-label {
-      flex: 0 0 92px;
+      flex: 0 0 108px;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0 8px;
       background: #dc2626;
       color: #fff;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: 0.04em;
     }
@@ -368,11 +368,11 @@
 
     .ticker-message {
       display: inline-block;
-      padding-right: 90px;
+      padding-right: 110px;
       color: #fff;
-      font-size: 16px;
+      font-size: 24px;
       font-weight: 800;
-      line-height: 1;
+      line-height: 1.2;
     }
 
     .ticker-separator {
@@ -499,15 +499,15 @@
             <label for="tickerSpeedInput">टिकर गति</label>
             <div class="range-row">
               <input id="tickerSpeedInput" type="range" min="12" max="60" step="1" value="30" />
-              <span id="tickerSpeedValue" class="range-value">14 सेकंड</span>
+              <span id="tickerSpeedValue" class="range-value">30 सेकंड</span>
             </div>
           </div>
 
           <div class="field">
             <label for="tickerFontSizeInput">फ़ॉन्ट आकार</label>
             <div class="range-row">
-              <input id="tickerFontSizeInput" type="range" min="10" max="28" step="1" value="16" />
-              <span id="tickerFontSizeValue" class="range-value">16 px</span>
+              <input id="tickerFontSizeInput" type="range" min="16" max="40" step="1" value="24" />
+              <span id="tickerFontSizeValue" class="range-value">24 px</span>
             </div>
           </div>
 
@@ -576,6 +576,7 @@
     <div class="footer-note">Swar Srijan Studio · Front-end prototype · बाहरी API के बिना</div>
   </div>
 
+  
   <script>
     "use strict";
 
@@ -842,6 +843,8 @@
     });
 
     // ===== INITIALIZATION =====
+    tickerSpeedInput.value = "30";
+    tickerFontSizeInput.value = "24";
     updateTickerText();
     updateTickerSpeed();
     updateTickerFontSize();
